@@ -10,12 +10,11 @@ file = 'air_water_chemistry_test.csv'
 
 species = ['N',    'N+',     'N2',    'N2+',     'N2A3',
            'N2B3', 'N2C3',   'N2D',   'N2P',     'N2a_1',
-           'N2v1', 'N2v2',   'N2v3',  'N2v4',    'N2v5', 
-           'N2v6', 'N2v7',   'N2v8',  'N3+',     'N4+',
+           'N3+',     'N4+',
            'NO',   'NO+',    'NO-',   'O',       'O+',
            'O-',   'O1D',    'O1S',   'O2',      'O2+',
-           'O2-',  'O24_ev', 'O2a1',  'O2b1',    'O2v1',
-           'O2v2', 'O2v3',   'O2v4',  'O3',      'O3-',
+           'O2-',  'O24_ev', 'O2a1',  'O2b1',    
+           'O3',      'O3-',
            'O4+',  'O4-',    'O2pN2', 'N2O',     'NO2',
            'NO3',  'N2O5',   'N2O+',  'NO2+',    'N2O-',
            'NO2-', 'NO3-',   'e',     'H+',      'H2+',
@@ -25,40 +24,23 @@ species = ['N',    'N+',     'N2',    'N2+',     'N2A3',
 
 nn =      [1.,       1.,        2.,       2.,         2.,
            2.,       2.,        1.,       1.,         2.,
-           2.,       2.,        2.,       2.,         2.,
-           2.,       2.,        2.,       3.,         4.,
+           3.,         4.,
            2.,       2.,        2.,       1.,         1.,
            1.,       1.,        1.,       2.,         2.,
-           2.,       2.,        2.,       2.,         2.,
-           2.,       2.,        2.,       3.,         3.,
+           2.,       2.,        2.,       2.,         
+           3.,         3.,
            4.,       4.,        4.,       3.,         3.,
            4.,       7.,        3.,       3.,         3.,
            3.,       4.,        1.]
-#plot_species = ['O3','O','NO','O2a1','N2A3','N','O2b1','O1S']
-#plot_species = ['e', 'N', 'O', 'N+', 'O+']
-#plot_species = ['e', 'O3-', 'N+', 'NO-', 'O3']
-#plot_species = ['NO', 'NO+', 'NO-', 'O', 'O+', 'O1D']
-#plot_species = ['NO-']
+
 plot_species = np.copy(species)
-#plot_species = ['O+']   # this is the problem species
-#plot_species = ['N2v7', 'N2v8', 'N3+', 'N4+', 'NO', 'NO+', 'NO-']
-#plot_species = ['H-']
+#plot_species = ['e']
+#plot_species = ['N+']
 #plot_species = ['H+', 'H2+',  'H3+', 'OH+', 'H2O+', 'H3O+', 'H-', 'OH-', 'H', 'H2', 'OH', 'HO2', 'H2O2', 'HNO', 'HNO2', 'HNO3', 'H2O'] 
-#plot_species = ['H2O2']
-#plot_species = ['N2v1', 'N2v2', 'N2v3', 'N2v4', 'N2v5', 'N2v6', 'N2v7', 'N2v8']
 #plot_species = ['Te']
 #plot_species = ['reduced_field']
 #plot_species = ['voltage']
 #plot_species = ['e']
-#plot_species = ['N2', 'NEUTRAL']
-#plot_species = ['N+']
-#plot_species = ['e', 'N2', 'N2v1']
-#plot_species = ['N2O', 'NO2', 'NO3', 'N2O5', 'N2O+', 'NO2+', 'N2O-', 'NO2-', 'NO3-', 'e']
-
-
-#plot_species = ['e', 'N', 'N2', 'N+', 'N2+', 'NO', 'NO+', 'NO-']
-#plot_species = ['e']
-#plot_species = ['e', 'N4+', 'NO', 'NO+', 'NO-', 'O', 'O+', 'O-', 'O1D']
 
 test = pd.read_csv(file)
 #test2 = pd.read_csv(file2)
@@ -125,32 +107,18 @@ def find_times(t,recurrence_time):
 #plt.show()
 #exit()
 for i in range(len(plot_species)):
-    #loc = np.where(test[plot_species[i]] <= 0)[0]
-    #print(test[plot_species[i]][loc]) 
+    lines = ax.semilogy(test['time'][0:stoptime], test[plot_species[i]][0:stoptime], label=plot_species[i])
 
-    #ax.semilogy(test['time'], pos, label='positive')
-    #ax.semilogy(test['time'], neg + test['e'], label='negative')
-    #lines = ax.plot(test['time'], test['ION'] + test['NEUTRAL'] + test['e'], label='all')
-    #lines = ax.plot(test['time'], pos - (neg + test['e']), label='all')
-    #lines = ax.plot(test['time'][1:stoptime], test[plot_species[i]][1:stoptime]/np.linalg.norm(test[plot_species[i]][1:stoptime]), label=plot_species[i])
-
-    lines = ax.plot(test['time'][1:stoptime], test[plot_species[i]][1:stoptime], label=plot_species[i])
-    #lines = ax.semilogy(test['time'][1:stoptime], np.exp(test[plot_species[i]][1:stoptime]), label=plot_species[i])
-    #lines = ax.semilogy(np.exp(test[plot_species[i]][1:stoptime]), label=plot_species[i])
-
-    #lines = ax.plot(test['time'][1:stoptime], test[plot_species[i]][1:stoptime], label=plot_species[i])
     lines[0].set_color(cm(i//NUM_STYLES*float(NUM_STYLES)/NUM_COLORS))
     lines[0].set_linestyle(LINE_STYLES[i%NUM_STYLES])
 
-    #lines2 = ax.semilogy(test2['time'][1:stoptime2], test2[plot_species[i]][1:stoptime2]) 
-    #lines2[0].set_color(cm(i//NUM_STYLES*float(NUM_STYLES)/NUM_COLORS))
-    #lines2[0].set_linestyle(LINE_STYLES2[i%NUM_STYLES])
 plt.legend(ncol=4)
 #plt.axis([1e-9, 1e4, 1e8, 1e19])
 axis = plt.gca()
 #axis.set_ylim([-1e-4, 1e-4])
 #axis.set_ylim([1e0, 1e21])
 #axis.set_ylim([1e-30, 1e21])
+#axis.set_ylim([-1e14, 1e15])
 plt.show()
 plt.xlabel('Time [s]', fontsize=14)
 #plt.ylabel('kV', fontsize=14)

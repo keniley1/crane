@@ -27,6 +27,70 @@
     #scaling = 1e-27
   [../]
 
+  [./N2v1]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 2.55878e10
+    #scaling = 1e-25
+  [../]
+
+  [./N2v2]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 1.00116 
+    #scaling = 1e-24
+  [../]
+
+  [./N2v3]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 5.5845e9
+    #scaling = 1e-23
+  [../]
+
+  [./N2v4]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 1.30647e10
+    #scaling = 1e-23
+  [../]
+
+  [./N2v5]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 2.86135e9
+    #scaling = 1e-23
+  [../]
+
+  [./N2v6]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 2.71491e9
+    #scaling = 1e-23
+  [../]
+
+  [./N2v7]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 1.7183e9
+    #scaling = 1e-23
+  [../]
+
+  [./N2v8]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 1.47849e9
+    #scaling = 1e-22
+  [../]
+
   [./N2A3]
     family = SCALAR
     order = FIRST
@@ -123,6 +187,38 @@
     #initial_condition = 6.114228819695872e18
     initial_condition = 6.11423e18
     #scaling = 1e-28
+  [../]
+
+  [./O2v1]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 5.01355e10
+    #scaling = 1e-24
+  [../]
+
+  [./O2v2]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 6.5214e9
+    #scaling = 1e-23
+  [../]
+
+  [./O2v3]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 9.88707e8
+    #scaling = 1e-23
+  [../]
+
+  [./O2v4]
+    family = SCALAR
+    order = FIRST
+    #initial_condition = 1
+    initial_condition = 1.10152e8
+    #scaling = 1e-23
   [../]
 
   [./O2a1]
@@ -462,6 +558,46 @@
     variable = N2
   [../]
 
+  [./N2v1_time_deriv]
+    type = ODETimeDerivative
+    variable = N2v1
+  [../]
+
+  [./N2v2_time_deriv]
+    type = ODETimeDerivative
+    variable = N2v2
+  [../]
+
+  [./N2v3_time_deriv]
+    type = ODETimeDerivative
+    variable = N2v3
+  [../]
+
+  [./N2v4_time_deriv]
+    type = ODETimeDerivative
+    variable = N2v4
+  [../]
+
+  [./N2v5_time_deriv]
+    type = ODETimeDerivative
+    variable = N2v5
+  [../]
+
+  [./N2v6_time_deriv]
+    type = ODETimeDerivative
+    variable = N2v6
+  [../]
+
+  [./N2v7_time_deriv]
+    type = ODETimeDerivative
+    variable = N2v7
+  [../]
+
+  [./N2v8_time_deriv]
+    type = ODETimeDerivative
+    variable = N2v8
+  [../]
+
   [./N2A3_time_deriv]
     type = ODETimeDerivative
     variable = N2A3
@@ -520,6 +656,26 @@
   [./O2_time_deriv]
     type = ODETimeDerivative
     variable = O2
+  [../]
+
+  [./O2v1_time_deriv]
+    type = ODETimeDerivative
+    variable = O2v1
+  [../]
+
+  [./O2v2_time_deriv]
+    type = ODETimeDerivative
+    variable = O2v2
+  [../]
+
+  [./O2v3_time_deriv]
+    type = ODETimeDerivative
+    variable = O2v3
+  [../]
+
+  [./O2v4_time_deriv]
+    type = ODETimeDerivative
+    variable = O2v4
   [../]
 
   [./O2a1_time_deriv]
@@ -889,7 +1045,7 @@
   [./neutral_sum]
     type = VariableSum
     variable = NEUTRAL
-    args = 'N2 O2 N2A3 N2B3 N2a_1 N2C3 N N2D N2P O2a1 O2b1 O24_ev O O1D O1S O3 NO N2O NO2 NO3 N2O5 H H2 OH HO2 H2O2 HNO HNO2 HNO3 H2O'
+    args = 'N2 O2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 NO N2O NO2 NO3 N2O5'
     execute_on = 'initial linear nonlinear'
   [../]
 
@@ -978,9 +1134,8 @@
     #type = ImplicitEuler
     #type = BDF2
     #type = ImplicitMidpoint
-    type = LStableDirk2
     #type = LStableDirk2
-    #type =  AStableDirk4
+    type = LStableDirk3
   [../]
   #[./TimeIntegrator]
   #  #type = ImplicitMidpoint  # Works, but max timestep is lower than ImplicitEuler
@@ -1010,8 +1165,8 @@
     cutback_factor = 0.4
     dt = 1e-11
     # dt = 1.1
-    growth_factor = 1.1
-    optimal_iterations = 20
+    growth_factor = 1.05
+    optimal_iterations = 15
   [../]
   #[./TimeStepper]
   #  type = FunctionDT
@@ -1050,7 +1205,7 @@
   #[../]
   [./test]
     type = CSV
-    show = 'N2 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO NO+ NO- O2pN2 e N2O NO2 NO3 N2O5 N2O+ NO2+ N2O- NO2- NO3- H+ H2+ H3+ OH+ H2O+ H3O+ H- OH- H H2 OH HO2 H2O2 HNO HNO2 HNO3 H2O reduced_field Te'
+    show = 'N2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO NO+ NO- O2pN2 e N2O NO2 NO3 N2O5 N2O+ NO2+ N2O- NO2- NO3- H+ H2+ H3+ OH+ H2O+ H3O+ H- OH- H H2 OH HO2 H2O2 HNO HNO2 HNO3 H2O reduced_field Te'
   #execute_scalars_on = 'INITIAL TIMESTEP_END'
   [../]
   [./console]
@@ -1061,11 +1216,14 @@
 
 [ChemicalReactions]
   [./ScalarNetwork]
-    species = 'N2 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO N2O NO2 NO3 N2O5 NO+ N2O+ NO2+ NO- N2O- NO2- NO3- O2pN2 H+ H2+ H3+ OH+ H2O+ H3O+ H- OH- H H2 OH HO2 H2O2 HNO HNO2 HNO3 H2O e'
-    num_particles = '2 2 2 2 2 1 1 1 1 2 3 4 2 2 2 2 1 1 1 3 1 2 4 1 2 3 4 2 3 3 4 7 2 3 3 2 3 3 4 4 1 2 3 2 3 4 1 2 1 2 2 3 4 3 4 5 3 1'
+    species = 'N2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO N2O NO2 NO3 N2O5 NO+ N2O+ NO2+ NO- N2O- NO2- NO3- O2pN2 H+ H2+ H3+ OH+ H2O+ H3O+ H- OH- H H2 OH HO2 H2O2 HNO HNO2 HNO3 H2O e'
+    num_particles = '2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 2 3 4 2 2 2 2 2 2 2 2 1 1 1 3 1 2 4 1 2 3 4 2 3 3 4 7 2 3 3 2 3 3 4 4 1 2 3 2 3 4 1 2 1 2 2 3 4 3 4 5 3 1'
     balance_check = true
     charge_balance_check = false
     aux_species = 'NEUTRAL'
+    #species = 'N2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO N2O NO2 NO3 N2O5 NO+ N2O+ NO2+ NO- N2O- NO2- NO3- O2pN2'
+    #aux_species = 'NEUTRAL e'
+    #aux_species = 'e'
     reaction_coefficient_format = 'rate'
     include_electrons = true
     file_location = 'air_test_03'
@@ -1097,7 +1255,100 @@
                  e + H2O -> H- + OH                 : EEDF (C42_H2O_Attachment)
                  e + H2O -> O- + H2                 : EEDF (C41_H2O_Attachment)
                  e + H2O -> OH- + H                 : EEDF (C40_H2O_Attachment)
-
+                 e + N2 -> e + N2v1                 : EEDF (C2_N2_Excitation_0.0000_eV)
+                 e + N2 -> e + N2v1                 : EEDF (C3_N2_Excitation_0.29_eV) 
+                 e + N2 -> e + N2v2                 : EEDF (C4_N2_Excitation_0.59_eV)
+                 e + N2 -> e + N2v3                 : EEDF (C5_N2_Excitation_0.88_eV)
+                 e + N2 -> e + N2v4                 : EEDF (C6_N2_Excitation_1.17_eV)
+                 e + N2 -> e + N2v5                 : EEDF (C7_N2_Excitation_1.47_eV)
+                 e + N2 -> e + N2v6                 : EEDF (C8_N2_Excitation_1.76_eV)
+                 e + N2 -> e + N2v7                 : EEDF (C9_N2_Excitation_2.06_eV)
+                 e + N2 -> e + N2v8                 : EEDF (C10_N2_Excitation_2.35_eV)
+                 e + N2v1 -> e + N2                 : EEDF (C50_N2v1_De-excitation_0.29_eV)
+                 e + N2v2 -> e + N2                 : EEDF (C51_N2v2_De-excitation_0.59_eV)
+                 e + N2v3 -> e + N2                 : EEDF (C52_N2v3_De-excitation_0.88_eV)
+                 e + N2v4 -> e + N2                 : EEDF (C53_N2v4_De-excitation_1.17_eV)
+                 e + N2v5 -> e + N2                 : EEDF (C54_N2v5_De-excitation_1.47_eV)
+                 e + N2v6 -> e + N2                 : EEDF (C55_N2v6_De-excitation_1.76_eV)
+                 e + N2v7 -> e + N2                 : EEDF (C56_N2v7_De-excitation_2.06_eV)
+                 e + N2v8 -> e + N2                 : EEDF (C57_N2v8_De-excitation_2.35_eV)
+                 e + O2 -> e + O2v1                 : EEDF (C27_O2_Excitation_0.19_eV)
+                 e + O2 -> e + O2v1                 : EEDF (C28_O2_Excitation_0.19_eV)
+                 e + O2 -> e + O2v2                 : EEDF (C29_O2_Excitation_0.38_eV)
+                 e + O2 -> e + O2v2                 : EEDF (C30_O2_Excitation_0.38_eV)
+                 e + O2 -> e + O2v3                 : EEDF (C31_O2_Excitation_0.57_eV)
+                 e + O2 -> e + O2v4                 : EEDF (C32_O2_Excitation_0.75_eV)
+                 e + O2v1 -> e + O2                 : EEDF (C61_O2v1_De-excitation_0.19_eV)
+                 e + O2v2 -> e + O2                 : EEDF (C62_O2v2_De-excitation_0.38_eV)
+                 e + O2v3 -> e + O2                 : EEDF (C63_O2v3_De-excitation_0.57_eV)
+                 e + O2v4 -> e + O2                 : EEDF (C64_O2v4_De-excitation_0.75_eV)
+                 ######
+                 # Vibrational-translational relaxation (Capitelli2000, page 105)
+                 ######
+                 N2v1 + N2 -> N2 + N2               : {7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas))}
+                 N2v2 + N2 -> N2v1 + N2             : {2.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas))}
+                 N2v3 + N2 -> N2v2 + N2             : {3.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas))}
+                 N2v4 + N2 -> N2v3 + N2             : {4.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas))}
+                 N2v5 + N2 -> N2v4 + N2             : {5.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas))}
+                 N2v6 + N2 -> N2v5 + N2             : {6.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas))}
+                 N2v7 + N2 -> N2v6 + N2             : {7.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas))}
+                 N2v8 + N2 -> N2v7 + N2             : {8.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas))}
+                 N2 + N2 -> N2v1 + N2               : {7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas)) * exp(-0.29*11605/Tgas)}
+                 N2v1 + N2 -> N2v2 + N2             : {2.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas)) * exp(-0.29*11605/Tgas)}
+                 N2v2 + N2 -> N2v3 + N2             : {3.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas)) * exp(-0.29*11605/Tgas)}
+                 N2v3 + N2 -> N2v4 + N2             : {4.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas)) * exp(-0.29*11605/Tgas)}
+                 N2v4 + N2 -> N2v5 + N2             : {5.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas)) * exp(-0.29*11605/Tgas)}
+                 N2v5 + N2 -> N2v6 + N2             : {6.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas)) * exp(-0.29*11605/Tgas)}
+                 N2v6 + N2 -> N2v7 + N2             : {7.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas)) * exp(-0.29*11605/Tgas)}
+                 N2v7 + N2 -> N2v8 + N2             : {8.0 * 7.8e-12 * Tgas * exp(-218.0 / Tgas^(1./3.) + 690. / Tgas) / (1.0 - exp(-0.290*11605/Tgas)) * exp(-0.29*11605/Tgas)}
+                 N2v1 + N -> N2 + N                 : {4.0e-16 * (Tgas / 300.0)^0.5}
+                 N2v2 + N -> N2v1 + N               : {2.0 * 4.0e-16 * (Tgas / 300.0)^0.5}
+                 N2v3 + N -> N2v2 + N               : {3.0 * 4.0e-16 * (Tgas / 300.0)^0.5}
+                 N2v4 + N -> N2v3 + N               : {4.0 * 4.0e-16 * (Tgas / 300.0)^0.5}
+                 N2v5 + N -> N2v4 + N               : {5.0 * 4.0e-16 * (Tgas / 300.0)^0.5}
+                 N2v6 + N -> N2v5 + N               : {6.0 * 4.0e-16 * (Tgas / 300.0)^0.5}
+                 N2v7 + N -> N2v6 + N               : {7.0 * 4.0e-16 * (Tgas / 300.0)^0.5}
+                 N2v8 + N -> N2v7 + N               : {8.0 * 4.0e-16 * (Tgas / 300.0)^0.5}
+                 N2 + N -> N2v1 + N                 : {4.0e-16 * (Tgas / 300.0)^0.5 * exp(-0.29*11605.0)}
+                 N2v1 + N -> N2v2 + N               : {2.0 * 4.0e-16 * (Tgas / 300.0)^0.5 * exp(-0.29*11605.0)}
+                 N2v2 + N -> N2v3 + N               : {3.0 * 4.0e-16 * (Tgas / 300.0)^0.5 * exp(-0.29*11605.0)}
+                 N2v3 + N -> N2v4 + N               : {4.0 * 4.0e-16 * (Tgas / 300.0)^0.5 * exp(-0.29*11605.0)}
+                 N2v4 + N -> N2v5 + N               : {5.0 * 4.0e-16 * (Tgas / 300.0)^0.5 * exp(-0.29*11605.0)}
+                 N2v5 + N -> N2v6 + N               : {6.0 * 4.0e-16 * (Tgas / 300.0)^0.5 * exp(-0.29*11605.0)}
+                 N2v6 + N -> N2v7 + N               : {7.0 * 4.0e-16 * (Tgas / 300.0)^0.5 * exp(-0.29*11605.0)}
+                 N2v7 + N -> N2v8 + N               : {8.0 * 4.0e-16 * (Tgas / 300.0)^0.5 * exp(-0.29*11605.0)}
+                 N2v1 + O -> N2 + O                 : {1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0))}
+                 N2v2 + O -> N2v1 + O               : {2.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0))}
+                 N2v3 + O -> N2v2 + O               : {3.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0))}
+                 N2v4 + O -> N2v3 + O               : {4.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0))}
+                 N2v5 + O -> N2v4 + O               : {5.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0))}
+                 N2v6 + O -> N2v5 + O               : {6.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0))}
+                 N2v7 + O -> N2v6 + O               : {7.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0))}
+                 N2v8 + O -> N2v7 + O               : {8.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0))}
+                 N2 + O -> N2v1 + O                 : {1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0)) * exp(-0.28*11605.0)}
+                 N2v1 + O -> N2v2 + O               : {2.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0)) * exp(-0.28*11605.0)}
+                 N2v2 + O -> N2v3 + O               : {3.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0)) * exp(-0.28*11605.0)}
+                 N2v3 + O -> N2v4 + O               : {4.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0)) * exp(-0.28*11605.0)}
+                 N2v4 + O -> N2v5 + O               : {5.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0)) * exp(-0.28*11605.0)}
+                 N2v5 + O -> N2v6 + O               : {6.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0)) * exp(-0.28*11605.0)}
+                 N2v6 + O -> N2v7 + O               : {7.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0)) * exp(-0.28*11605.0)}
+                 N2v7 + O -> N2v8 + O               : {8.0 * 1.20e-13 * exp( - 27.6 / Tgas^(1.0/3.0)) * exp(-0.28*11605.0)}
+                 O2v1 + O2 -> O2 + O2               : {1.35e-12 * Tgas * exp( - 137.9 / Tgas^(1.0/3.0) ) / ( 1.0 - exp(-0.19*11605.0) )}
+                 O2v2 + O2 -> O2v1 + O2             : {2.0 * 1.35e-12 * Tgas * exp( - 137.9 / Tgas^(1.0/3.0) ) / ( 1.0 - exp(-0.19*11605.0) )}
+                 O2v3 + O2 -> O2v2 + O2             : {3.0 * 1.35e-12 * Tgas * exp( - 137.9 / Tgas^(1.0/3.0) ) / ( 1.0 - exp(-0.19*11605.0) )}
+                 O2v4 + O2 -> O2v3 + O2             : {4.0 * 1.35e-12 * Tgas * exp( - 137.9 / Tgas^(1.0/3.0) ) / ( 1.0 - exp(-0.19*11605.0) )}
+                 O2 + O2 -> O2v1 + O2               : {1.35e-12 * Tgas * exp( - 137.9 / Tgas^(1.0/3.0) ) / ( 1.0 - exp(-0.19*11605.0) ) * exp(-0.19 * 11605)}
+                 O2v1 + O2 -> O2v2 + O2             : {2.0 * 1.35e-12 * Tgas * exp( - 137.9 / Tgas^(1.0/3.0) ) / ( 1.0 - exp(-0.19*11605.0) ) * exp(-0.19 * 11605)}
+                 O2v2 + O2 -> O2v3 + O2             : {3.0 * 1.35e-12 * Tgas * exp( - 137.9 / Tgas^(1.0/3.0) ) / ( 1.0 - exp(-0.19*11605.0) ) * exp(-0.19 * 11605)}
+                 O2v3 + O2 -> O2v4 + O2             : {4.0 * 1.35e-12 * Tgas * exp( - 137.9 / Tgas^(1.0/3.0) ) / ( 1.0 - exp(-0.19*11605.0) ) * exp(-0.19 * 11605)}
+                 O2v1 + O -> O2 + O                 : {4.5e-15 * Tgas * exp(-0.19 * 11605)}
+                 O2v2 + O -> O2v1 + O               : {2.0 * 4.5e-15 * Tgas * exp(-0.19 * 11605)}
+                 O2v3 + O -> O2v2 + O               : {3.0 * 4.5e-15 * Tgas * exp(-0.19 * 11605)}
+                 O2v4 + O -> O2v3 + O               : {4.0 * 4.5e-15 * Tgas * exp(-0.19 * 11605)}
+                 O2 + O -> O2v1 + O                 : {4.5e-15 * Tgas * exp(-0.19 * 11605)}
+                 O2v1 + O -> O2v2 + O               : {2.0 * 4.5e-15 * Tgas * exp(-0.19 * 11605)}
+                 O2v2 + O -> O2v3 + O               : {3.0 * 4.5e-15 * Tgas * exp(-0.19 * 11605)}
+                 O2v3 + O -> O2v4 + O               : {4.0 * 4.5e-15 * Tgas * exp(-0.19 * 11605)}
                  #####
                  # excitation of electronic levels by electron impact (Bolsig+)
                  # Note that CRANE will need to be modified to allow duplicate reactions here...
