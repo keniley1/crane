@@ -1120,10 +1120,11 @@
   #compute_scaling_once = false
   #end_time = 1e4
   end_time = 0.004
-  dtmax = 1e-7
+  dtmax = 1e-8
   line_search = 'basic'
   petsc_options = '-snes_converged_reason -snes_linesearch_monitor'
   solve_type = NEWTON
+  #num_steps = 100
   #solve_type = PJFNK
   #solve_type = JFNK
   #solve_type = LINEAR
@@ -1136,6 +1137,7 @@
     #type = ImplicitMidpoint
     #type = LStableDirk2
     type = LStableDirk3
+    #type = LStableDirk4
   [../]
   #[./TimeIntegrator]
   #  #type = ImplicitMidpoint  # Works, but max timestep is lower than ImplicitEuler
@@ -1166,7 +1168,7 @@
     dt = 1e-11
     # dt = 1.1
     growth_factor = 1.05
-    optimal_iterations = 15
+    optimal_iterations = 25
   [../]
   #[./TimeStepper]
   #  type = FunctionDT

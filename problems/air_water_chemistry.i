@@ -860,7 +860,7 @@
     variable = Te
     sampler = reduced_field
     scale_factor = 7733.52643
-    property_file = 'air_test_03/electron_energy.txt'
+    property_file = 'air_test_04/electron_energy.txt'
     execute_on = 'INITIAL TIMESTEP_BEGIN'
   [../]
 
@@ -968,6 +968,7 @@
   line_search = 'basic'
   petsc_options = '-snes_converged_reason -snes_linesearch_monitor'
   solve_type = NEWTON
+  #num_steps = 100
   #solve_type = PJFNK
   #solve_type = JFNK
   #solve_type = LINEAR
@@ -1048,7 +1049,7 @@
   #  interval = 1
   #  hide = 'N2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO NO+ NO- O2pN2 e N2O NO2 NO3 N2O5 N2O+ NO2+ N2O- NO2- NO3- reduced_field test'
   #[../]
-  [./test]
+  [./temp]
     type = CSV
     show = 'N2 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO NO+ NO- O2pN2 e N2O NO2 NO3 N2O5 N2O+ NO2+ N2O- NO2- NO3- H+ H2+ H3+ OH+ H2O+ H3O+ H- OH- H H2 OH HO2 H2O2 HNO HNO2 HNO3 H2O reduced_field Te'
   #execute_scalars_on = 'INITIAL TIMESTEP_END'
@@ -1068,7 +1069,7 @@
     aux_species = 'NEUTRAL'
     reaction_coefficient_format = 'rate'
     include_electrons = true
-    file_location = 'air_test_03'
+    file_location = 'air_test_04'
     electron_density = 'e'
     #equation_variables = 'TeffN TeffN2 TeffN3 TeffN4 TionN TionN2 TionN3 TionN4'
     #equation_constants = 'Te Tgas'
@@ -1079,67 +1080,68 @@
     equation_values = '300'
     rate_provider_var = 'reduced_field'
     #lumped_species = true
-    #lumped = 'N2 O2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 NO'
+    #lumped = 'N2 O2 N2A3 N2B3 N2a_1 N2C3 N N2D N2P O2a1 O2b1 O24_ev O O1D O1S O3 NO N2O NO2 NO3 N2O5 H H2 OH HO2 H2O2 HNO HNO2 HNO3 H2O'
     #lumped_name = 'NEUTRAL'
     track_rates = false
 
     # NOTE: rate coefficients units are cm^3 s^-1
-    #reactions = 'e + N2 -> e + N2v1                 : EEDF (C2_N2_Excitation_0.29_eV)
-    reactions = 'e + H2O -> H2O+ + e + e            : EEDF (C45_H2O_Ionization_13.50_eV) 
-                 e + H2O -> OH+ + H + e + e         : EEDF (C47_H2O_Ionization_18.12_eV)
-                 e + H2O -> H+ + OH + e + e         : EEDF (C46_H2O_Ionization_16.90_eV)
-                 e + H2O -> O+ + H2 + e + e         : EEDF (C48_H2O_Ionization_19.00_eV)
-                 e + H2O -> H2+ + O + e + e         : EEDF (C49_H2O_Ionization_20.70_eV)
-                 e + H2O -> OH + H + e              : EEDF (C43_H2O_Excitation_0.0000_eV)
-                 e + H2O -> H2 + O1D + e            : EEDF (C44_H2O_Excitation_0.0000_eV) 
-                 e + H2  -> H + H + e               : EEDF (C99_H2_Excitation_8.90_eV)
-                 e + H2 -> H2+ + e + e              : EEDF (C100_H2_Ionization_15.40_eV)
-                 e + H2O -> H- + OH                 : EEDF (C42_H2O_Attachment)
-                 e + H2O -> O- + H2                 : EEDF (C41_H2O_Attachment)
-                 e + H2O -> OH- + H                 : EEDF (C40_H2O_Attachment)
+    reactions = 'e + H2O -> H2O+ + e + e            : EEDF (C30_H2O_Ionization_13.50_eV) 
+                 e + H2O -> H+ + OH + e + e         : EEDF (C31_H2O_Ionization_16.90_eV)
+                 e + H2O -> OH+ + H + e + e         : EEDF (C32_H2O_Ionization_18.12_eV)
+                 e + H2O -> O+ + H2 + e + e         : EEDF (C33_H2O_Ionization_19.00_eV)
+                 e + H2O -> H2+ + O + e + e         : EEDF (C34_H2O_Ionization_20.70_eV)
+                 e + H2O -> OH + H + e              : EEDF (C28_H2O_Excitation_0.0000_eV)
+                 e + H2O -> H2 + O1D + e            : EEDF (C29_H2O_Excitation_0.0000_eV) 
+                 e + H2  -> H + H + e               : EEDF (C76_H2_Excitation_8.90_eV)
+                 e + H2 -> H2+ + e + e              : EEDF (C77_H2_Ionization_15.40_eV)
+                 e + H2O -> H- + OH                 : EEDF (C25_H2O_Attachment)
+                 e + H2O -> O- + H2                 : EEDF (C26_H2O_Attachment)
+                 e + H2O -> OH- + H                 : EEDF (C27_H2O_Attachment)
 
                  #####
                  # excitation of electronic levels by electron impact (Bolsig+)
                  # Note that CRANE will need to be modified to allow duplicate reactions here...
                  #####
-                 e + N2 -> e + N2A3                 : EEDF (C11_N2_Excitation_6.17_eV)
-                 e + N2 -> e + N2A3                 : EEDF (C12_N2_Excitation_7.00_eV)
-                 e + N2 -> e + N2A3                 : EEDF (C13_N2_Excitation_7.80_eV)
-                 e + N2 -> e + N2B3                 : EEDF (C14_N2_Excitation_7.35_eV)
-                 e + N2 -> e + N2B3                 : EEDF (C15_N2_Excitation_7.36_eV)
-                 e + N2 -> e + N2B3                 : EEDF (C16_N2_Excitation_8.16_eV)
-                 e + N2 -> e + N2a_1                : EEDF (C17_N2_Excitation_8.40_eV)
-                 e + N2 -> e + N2a_1                : EEDF (C18_N2_Excitation_8.55_eV)
-                 e + N2 -> e + N2a_1                : EEDF (C19_N2_Excitation_8.89_eV)
-                 e + N2 -> e + N2C3                 : EEDF (C20_N2_Excitation_11.03_eV)
-                 e + N2 -> e + N2C3                 : EEDF (C21_N2_Excitation_11.87_eV)
-                 e + N2 -> e + N2C3                 : EEDF (C22_N2_Excitation_12.25_eV)
-                 e + N2 -> e + N + N2D              : EEDF (C23_N2_Excitation_13.00_eV)
-                 e + O2 -> e + O2a1                 : EEDF (C33_O2_Excitation_0.98_eV)
-                 e + O2 -> e + O2b1                 : EEDF (C34_O2_Excitation_1.63_eV)
-                 e + O2 -> e + O24_ev               : EEDF (C35_O2_Excitation_4.50_eV)
-                 e + O2 -> e + O + O                : EEDF (C36_O2_Excitation_6.00_eV)
-                 e + O2 -> e + O + O1D              : EEDF (C37_O2_Excitation_8.40_eV)
-                 e + O2 -> e + O + O1S              : EEDF (C38_O2_Excitation_9.97_eV)
-                 e + O2a1 -> e + O + O              : EEDF (C68_O2a1_Excitation_6.00_eV)
-                 e + O -> e + O1D                   : EEDF (C73_O_Excitation_1.97_eV)
-                 e + O -> e + O1S                   : EEDF (C74_O_Excitation_4.19_eV)
+                 e + N2 -> e + N2A3                 : EEDF (C2_N2_Excitation_6.17_eV)
+                 e + N2 -> e + N2A3                 : EEDF (C3_N2_Excitation_7.00_eV)
+                 e + N2 -> e + N2A3                 : EEDF (C4_N2_Excitation_7.80_eV)
+                 e + N2 -> e + N2B3                 : EEDF (C5_N2_Excitation_7.35_eV)
+                 e + N2 -> e + N2B3                 : EEDF (C6_N2_Excitation_7.36_eV)
+                 e + N2 -> e + N2B3                 : EEDF (C7_N2_Excitation_8.16_eV)
+                 e + N2 -> e + N2a_1                : EEDF (C8_N2_Excitation_8.40_eV)
+                 e + N2 -> e + N2a_1                : EEDF (C9_N2_Excitation_8.55_eV)
+                 e + N2 -> e + N2a_1                : EEDF (C10_N2_Excitation_8.89_eV)
+                 e + N2 -> e + N2C3                 : EEDF (C11_N2_Excitation_11.03_eV)
+                 e + N2 -> e + N2C3                 : EEDF (C12_N2_Excitation_11.87_eV)
+                 e + N2 -> e + N2C3                 : EEDF (C13_N2_Excitation_12.25_eV)
+                 e + N2 -> e + N + N2D              : EEDF (C14_N2_Excitation_13.00_eV)
+                 e + O2 -> e + O2a1                 : EEDF (C18_O2_Excitation_0.98_eV)
+                 e + O2 -> e + O2b1                 : EEDF (C19_O2_Excitation_1.63_eV)
+                 e + O2 -> e + O24_ev               : EEDF (C20_O2_Excitation_4.50_eV)
+                 e + O2 -> e + O + O                : EEDF (C21_O2_Excitation_6.00_eV)
+                 e + O2 -> e + O + O1D              : EEDF (C22_O2_Excitation_8.40_eV)
+                 e + O2 -> e + O + O1S              : EEDF (C23_O2_Excitation_9.97_eV)
+                 e + O2a1 -> e + O + O              : EEDF (C41_O2a1_Excitation_6.00_eV)
+                 e + O -> e + O1D                   : EEDF (C50_O_Excitation_1.97_eV)
+                 e + O -> e + O1S                   : EEDF (C51_O_Excitation_4.19_eV)
                  ####
                  # de-excitation of electronic levels by electron impact (BOLSIG+)
                  ####
-                 e + N2A3 -> e + N2                 : EEDF (C58_N2A3_De-excitation_6.17_eV)
-                 e + O2a1 -> e + O2                : EEDF (C65_O2a1_De-excitation_0.98_eV)
+                 e + N2A3 -> e + N2                 : EEDF (C35_N2A3_De-excitation_6.17_eV)
+                 e + O2a1 -> e + O2                : EEDF (C38_O2a1_De-excitation_0.98_eV)
                  ####
                  # ionization by electron impact (BOLSIG+)
                  # note the missing data section in the inp file (4 extra reactions - not shown here)
                  ####
-                 e + N -> e + e + N+                : EEDF (C71_N_Ionization_14.55_eV)
-                 e + O -> e + e + O+                : EEDF (C75_O_Ionization_13.62_eV)
-                 e + N2 -> e + e + N2+              : EEDF (C24_N2_Ionization_15.60_eV)
-                 e + N2A3 -> e + e + N2+            : EEDF (C60_N2A3_Ionization_10.79_eV)
-                 e + O2 -> e + e + O2+              : EEDF (C39_O2_Ionization_12.06_eV)
-                 e + O2a1 -> e + e + O2+            : EEDF (C69_O2a1_Ionization_11.00_eV)
-                 e + NO -> e + e + NO+              : EEDF (C85_NO_Ionization_9.26_eV)
+                 e + N -> e + e + N+                : EEDF (C48_N_Ionization_14.55_eV)
+                 e + O -> e + e + O+                : EEDF (C52_O_Ionization_13.62_eV)
+                 e + N2 -> e + e + N2+              : EEDF (C15_N2_Ionization_15.60_eV)
+                 e + N2A3 -> e + e + N2+            : EEDF (C37_N2A3_Ionization_10.79_eV)
+                 e + O2 -> e + e + O2+              : EEDF (C24_O2_Ionization_12.06_eV)
+                 e + O2a1 -> e + e + O2+            : EEDF (C42_O2a1_Ionization_11.00_eV)
+                 e + O2b1 -> e + e + O2+            : EEDF (C46_O2b1_Ionization_10.40_eV)
+                 e + NO -> e + e + NO+              : EEDF (C62_NO_Ionization_9.26_eV)
+                 e + N2O -> e + e + N2O+            : EEDF (C75_N2O_Ionization_12.89_eV)
                  ####
                  # electron-ion recombination
                  ####
@@ -1164,10 +1166,11 @@
                  # e + O2 + O2 -> O2- + O2              : EEDF (
                  # ^ Not sure what to do with this one. Never seen anything like it before.
                  ####
-                 e + O2 -> O- + O                     : EEDF (C25_O2_Attachment)
-                 e + NO -> O- + N                     : EEDF (C76_NO_Attachment)
-                 e + O3 -> O- + O2                    : EEDF (C86_O3_Attachment)
-                 e + O3 -> O2- + O                    : EEDF (C87_O3_Attachment)
+                 e + O2 -> O- + O                     : EEDF (C16_O2_Attachment)
+                 e + NO -> O- + N                     : EEDF (C53_NO_Attachment)
+                 e + O3 -> O- + O2                    : EEDF (C63_O3_Attachment)
+                 e + O3 -> O2- + O                    : EEDF (C64_O3_Attachment)
+                 e + N2O -> NO- + N                   : EEDF (C67_N2O_Attachment)
                  e + O + O2 -> O- + O2                : 1e-31
                  e + O + O2 -> O2- + O                : 1e-31
                  e + O3 + NEUTRAL -> O3- + NEUTRAL    : 1e-31
@@ -1522,10 +1525,8 @@
                  NO- + O+ + NEUTRAL -> NO + O + NEUTRAL               : {2e-25 * (300/TionN2)^2.5}
                  NO- + O2+ + NEUTRAL -> NO + O2 + NEUTRAL             : {2e-25 * (300/TionN2)^2.5}
                  NO- + NO+ + NEUTRAL -> NO + NO + NEUTRAL             : {2e-25 * (300/TionN2)^2.5}
-                 e + N2O -> e + e + N2O+            : EEDF (C98_N2O_Ionization_12.89_eV)
                  e + N2O+ -> N2 + O                 : {2.0e-7 * (300/Te)^0.5}
                  e + NO2+ -> NO + O                 : {2.0e-7 * (300/Te)^0.5}
-                 e + N2O -> NO- + N                   : EEDF (C90_N2O_Attachment)
                  e + NO2 -> O- + NO                   : 1e-11
                  e + N2O + NEUTRAL -> N2O- + NEUTRAL  : 1e-31
                  O-  + NO -> NO2 + e                  : 2.6e-10

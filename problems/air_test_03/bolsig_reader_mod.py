@@ -65,10 +65,10 @@ def read_bolsig(bolsigdatafile,XSdatafile): #Takes name of bolsig data file as i
 #lines of whitespace between end of dataset and beginning of next dataset
         for j in range(len(reac_lines)):
             #f = open(kfile_names[j],"w+")
-            x_data = np.zeros(shape=(200,))
-            y_data = np.zeros(shape=(200,))
+            x_data = np.zeros(shape=(400,))
+            y_data = np.zeros(shape=(400,))
             cc = 0
-            for i in range(reac_lines[j]+2,reac_lines[j]+202):
+            for i in range(reac_lines[j]+2,reac_lines[j]+402):
                 tempx, tempy = lines[i].split()
                 x_data[cc] = float(tempx)
                 y_data[cc] = float(tempy)
@@ -76,7 +76,7 @@ def read_bolsig(bolsigdatafile,XSdatafile): #Takes name of bolsig data file as i
 
                 #f.write(lines[i])
             with open(kfile_names[j],'w+') as write_file:
-                for i in range(200):
+                for i in range(400):
                     #write_file.write('{0:.4e} {1:.4e}\n'.format(x_data[i], y_data[i]*1e6))
                     write_file.write('{0:.4e} {1:.4e}\n'.format(x_data[i], y_data[i]*1e6))
             #f.close()
