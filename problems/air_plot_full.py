@@ -4,9 +4,9 @@ import csv
 import pandas as pd
 
 # Output CSV file name
-file = 'air_chemistry_full_out.csv'
-#file = 'air_voltage_log_out.csv'
-#file = 'air_voltage_out_100us_pulse_01.csv'
+#file = 'air_chemistry_full_out.csv'
+#file = 'air_chemistry_full_out_02.csv'
+file = 'air_chemistry_full_test.csv'
 
 species = ['N',    'N+',     'N2',    'N2+',     'N2A3',
            'N2B3', 'N2C3',   'N2D',   'N2P',     'N2a_1',
@@ -36,8 +36,9 @@ nn =      [1.,       1.,        2.,       2.,         2.,
 #plot_species = ['e', 'O3-', 'N+', 'NO-', 'O3']
 #plot_species = ['NO', 'NO+', 'NO-', 'O', 'O+', 'O1D']
 #plot_species = ['NO-']
-plot_species = np.copy(species)
-#plot_species = ['test']
+#plot_species = np.copy(species)
+plot_species = ['N2v1', 'N2v2', 'N2v3', 'N2v4', 'N2v5', 'N2v6', 'N2v7', 'N2v8']
+#plot_species = ['Te']
 #plot_species = ['reduced_field']
 #plot_species = ['voltage']
 #plot_species = ['e']
@@ -88,9 +89,10 @@ def find_times(t,recurrence_time):
 
 
 #cycle_index = find_times(test['time'], 1e-4)
-#num_cycles = 11
-#df = test['e'].rename_axis('ID').values
-#for i in range(6,num_cycles-1):
+#num_cycles = 6
+##df = test['e'].rename_axis('ID').values
+#df = test['reduced_field'].rename_axis('ID').values
+#for i in range(num_cycles-1):
 #    t1 = cycle_index*i
 #    t2 = cycle_index*(i+1)
 #    t3 = cycle_index*(i+2)
@@ -99,7 +101,7 @@ def find_times(t,recurrence_time):
 #    #plt.semilogy(test['time'][t1:t2],cycle1, '.')
 #    #plt.semilogy(test['time'][t1:t2],cycle2, '.--')
 #    lines = plt.semilogy(abs(cycle2-cycle1), label=str(i))
-#    lines[0].set_color(cm((i-6)//NUM_STYLES*float(NUM_STYLES)/4))
+#    lines[0].set_color(cm(i//NUM_STYLES*float(NUM_STYLES)/6))
 #    lines[0].set_linestyle(LINE_STYLES[i%NUM_STYLES])
 #plt.legend()
 #plt.show()

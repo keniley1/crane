@@ -4,9 +4,9 @@ import csv
 import pandas as pd
 
 # Output CSV file name
-file = 'air_voltage_out.csv'
+#file = 'air_voltage_out.csv'
 #file = 'air_voltage_log_out.csv'
-#file = 'air_voltage_out_100us_pulse_01.csv'
+file = 'air_voltage_out_100us_pulse_01.csv'
 
 species = ['N',    'N+',     'N2',    'N2+',     'N2A3',
            'N2B3', 'N2C3',   'N2D',   'N2P',     'N2a_1',

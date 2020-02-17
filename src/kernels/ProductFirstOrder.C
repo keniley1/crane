@@ -30,7 +30,7 @@ ProductFirstOrder::ProductFirstOrder(const InputParameters & parameters)
 Real
 ProductFirstOrder::computeQpResidual()
 {
-  return -_test[_i][_qp] * (_stoichiometric_coeff)*_reaction_coeff[_qp] * _v[_qp];
+  return -_test[_i][_qp] * _stoichiometric_coeff * _reaction_coeff[_qp] * _v[_qp];
 }
 
 Real

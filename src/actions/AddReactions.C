@@ -177,7 +177,15 @@ AddReactions::act()
           params.set<std::vector<VariableName>>("target_species") = {_reactants[i][target]};
         }
         params.set<bool>("elastic_collision") = {_elastic_collision[i]};
-        params.set<FileName>("property_file") = "reaction_" + _reaction[i] + ".txt";
+        // params.set<FileName>("property_file") = "reaction_" + _reaction[i] + ".txt";
+        if (_is_identified[i])
+        {
+          params.set<FileName>("property_file") = _reaction_identifier[_eedf_reaction_number[i]];
+        }
+        else
+        {
+          params.set<FileName>("property_file") = "reaction_" + _reaction[i] + ".txt";
+        }
 
         _problem->addMaterial("EEDFRateConstantTownsend", "reaction_" + std::to_string(i), params);
       }
@@ -189,7 +197,15 @@ AddReactions::act()
         params.set<std::string>("file_location") = getParam<std::string>("file_location");
         params.set<Real>("position_units") = position_units;
         params.set<std::vector<VariableName>>("sampler") = {_sampling_variable};
-        params.set<FileName>("property_file") = "reaction_" + _reaction[i] + ".txt";
+        // params.set<FileName>("property_file") = "reaction_" + _reaction[i] + ".txt";
+        if (_is_identified[i])
+        {
+          params.set<FileName>("property_file") = _reaction_identifier[_eedf_reaction_number[i]];
+        }
+        else
+        {
+          params.set<FileName>("property_file") = "reaction_" + _reaction[i] + ".txt";
+        }
         params.set<bool>("elastic_collision") = {_elastic_collision[i]};
         params.set<std::vector<VariableName>>("em") = {_reactants[i][_electron_index[i]]};
         _problem->addMaterial("EEDFRateConstant", "reaction_" + std::to_string(i), params);
@@ -275,6 +291,7 @@ AddReactions::act()
     int non_electron_index;
     int index; // stores index of species in the reactant/product arrays
     std::vector<std::string>::iterator iter;
+    std::vector<std::string>::iterator iter_aux;
     for (unsigned int i = 0; i < _num_reactions; ++i)
     {
       energy_kernel_name = "EnergyTerm";
@@ -368,7 +385,8 @@ AddReactions::act()
               params.set<std::vector<SubdomainName>>("block") =
                   getParam<std::vector<SubdomainName>>("block");
               _problem->addKernel(energy_kernel_name,
-                                  "elastic_kernel" + std::to_string(i) + "_" + _reaction[i],
+                                  "elastic_kernel" + std::to_string(i) + "_" + std::to_string(t) +
+                                      "_" + _reaction[i],
                                   params);
             }
             else
@@ -388,7 +406,8 @@ AddReactions::act()
               params.set<std::vector<SubdomainName>>("block") =
                   getParam<std::vector<SubdomainName>>("block");
               _problem->addKernel(energy_kernel_name,
-                                  "energy_kernel" + std::to_string(i) + "_" + _reaction[i],
+                                  "energy_kernel" + std::to_string(i) + "_" + std::to_string(t) +
+                                      "_" + _reaction[i],
                                   params);
             }
           }
@@ -434,7 +453,8 @@ AddReactions::act()
             params.set<std::vector<SubdomainName>>("block") =
                 getParam<std::vector<SubdomainName>>("block");
             _problem->addKernel(energy_kernel_name,
-                                "energy_kernel" + std::to_string(i) + std::to_string(t),
+                                "energy_kernel" + std::to_string(i) + "_" + std::to_string(t) +
+                                    "_" + std::to_string(t),
                                 params);
             // }
           }
@@ -444,6 +464,11 @@ AddReactions::act()
       {
         iter = std::find(_reactants[i].begin(), _reactants[i].end(), _species[j]);
         index = std::distance(_reactants[i].begin(), iter);
+        iter_aux = std::find(_aux_species.begin(), _aux_species.end(), _species[j]);
+        if (iter_aux != _aux_species.end())
+        {
+          continue;
+        }
 
         if (iter != _reactants[i].end())
         {
@@ -461,17 +486,18 @@ AddReactions::act()
                 std::find(_species.begin(), _species.end(), _reactants[i][reactant_indices[k]]) !=
                 _species.end();
 
-            find_aux = std::find(_aux_species.begin(),
-                                 _aux_species.end(),
-                                 _reactants[i][reactant_indices[k]]) != _aux_species.end();
+            if (!find_other)
+              find_other = std::find(_aux_species.begin(),
+                                   _aux_species.end(),
+                                   _reactants[i][reactant_indices[k]]) != _aux_species.end();
             if (find_other)
               continue;
             else
               reactant_indices.erase(reactant_indices.begin() + k);
           }
           v_index = std::abs(index - 1);
-          find_other =
-              std::find(_species.begin(), _species.end(), _reactants[i][v_index]) != _species.end();
+          //find_other =
+          //    std::find(_species.begin(), _species.end(), _reactants[i][v_index]) != _species.end();
 
           if (_species_count[i][j] < 0)
           {
@@ -490,8 +516,10 @@ AddReactions::act()
               params.set<std::string>("reaction") = _reaction[i];
               // params.set<std::string>("reaction_coefficient_name") =
               // _reaction_coefficient_name[i];
-              _problem->addKernel(
-                  reactant_kernel_name, "kernel" + std::to_string(j) + "_" + _reaction[i], params);
+              _problem->addKernel(reactant_kernel_name,
+                                  "kernel" + std::to_string(i) + "_" + std::to_string(j) + "_" +
+                                      _reaction[i],
+                                  params);
             }
             else if (_coefficient_format == "rate")
             {
@@ -507,8 +535,10 @@ AddReactions::act()
                       _reactants[i][reactant_indices[k]]};
                 // params.set<std::vector<VariableName>>("v") = {_reactants[i][v_index]};
               }
-              _problem->addKernel(
-                  reactant_kernel_name, "kernel" + std::to_string(j) + "_" + _reaction[i], params);
+              _problem->addKernel(reactant_kernel_name,
+                                  "kernel" + std::to_string(i) + "_" + std::to_string(j) + "_" +
+                                      _reaction[i],
+                                  params);
             }
           }
         }
@@ -525,7 +555,9 @@ AddReactions::act()
           include_species[k] =
               std::find(_species.begin(), _species.end(), _reactants[i][k]) != _species.end();
           if (!include_species[k])
-            include_species[k] = std::find(_aux_species.begin(), _aux_species.end(), _reactants[i][k]) != _aux_species.end();
+            include_species[k] =
+                std::find(_aux_species.begin(), _aux_species.end(), _reactants[i][k]) !=
+                _aux_species.end();
         }
         if (iter != _products[i].end())
         {
@@ -570,7 +602,8 @@ AddReactions::act()
               }
               params.set<Real>("coefficient") = _species_count[i][j];
               _problem->addKernel(product_kernel_name,
-                                  "kernel_prod" + std::to_string(j) + "_" + _reaction[i],
+                                  "kernel_prod" + std::to_string(i) + "_" + std::to_string(j) +
+                                      "_" + _reaction[i],
                                   params);
             }
           }

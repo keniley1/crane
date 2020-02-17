@@ -842,8 +842,8 @@
   #  execute_scalars_on = 'INITIAL TIMESTEP_END'
   #  #scalar_as_nodal = true
   #[../]
-  #show = 'N N+ N2 N2+ N2A3 N2B3 N2C3 N2D N2P N2a_1 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N3+ N4+ NO NO+ NO- O O+ O- O1D O1S O2 O2+ O2- O24_ev O2a1 O2b1 O2v1 O2v2 O2v3 O2v4 O3 O3- O4+ O4- O2pN2 NEUTRAL e reduced_field test'
-  show = 'N2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO NO+ NO- O2pN2 e'
+  show = 'N N+ N2 N2+ N2A3 N2B3 N2C3 N2D N2P N2a_1 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N3+ N4+ NO NO+ NO- O O+ O- O1D O1S O2 O2+ O2- O24_ev O2a1 O2b1 O2v1 O2v2 O2v3 O2v4 O3 O3- O4+ O4- O2pN2 NEUTRAL e reduced_field'
+  #show = 'N2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO NO+ NO- O2pN2 e'
   [./console]
     type = Console
     execute_scalars_on = 'none'

@@ -6,6 +6,7 @@ import pandas as pd
 # Output CSV file name
 #file = 'air_water_chemistry_test.csv'
 file = 'air_water_chemistry_vib_test.csv'
+#file = 'air_water_chemistry_vib_log_test.csv'
 
 species = ['N',    'N+',     'N2',    'N2+',     'N2A3',
            'N2B3', 'N2C3',   'N2D',   'N2P',     'N2a_1',
@@ -60,7 +61,12 @@ plot_species = np.copy(species)
 #plot_species = ['N+']
 #plot_species = ['e', 'N2', 'N2v1']
 #plot_species = ['N2O', 'NO2', 'NO3', 'N2O5', 'N2O+', 'NO2+', 'N2O-', 'NO2-', 'NO3-', 'e']
-plot_species = ['O1D']
+#plot_species = ['O1D']
+#plot_species = ['O1S', 'N2O', 'NO', 'O3']
+#plot_species = ['O3', 'O2a1', 'O2']
+plot_species = ['N2O5']
+
+
 
 
 #plot_species = ['e', 'N', 'N2', 'N+', 'N2+', 'NO', 'NO+', 'NO-']
@@ -69,8 +75,17 @@ plot_species = ['O1D']
 
 test = pd.read_csv(file)
 #test2 = pd.read_csv(file2)
-pos = test['N+'] + test['N2+'] + test['N3+'] + test['N4+'] + test['O+'] + test['O2+'] + test['O4+'] + test['NO+'] + test['O2pN2'] + test['N2O+'] + test['NO2+'] + test['H+'] + test['H2+'] + test['H3+'] + test['OH+'] + test['H2O+'] + test['H3O+'] 
-neg = test['O-'] + test['O2-'] + test['O3-'] + test['O4-'] + test['NO-'] + test['NO2-'] + test['N2O-'] + test['NO3-'] + test['H-'] + test['OH-'] 
+#pos = test['N+'] + test['N2+'] + test['N3+'] + test['N4+'] + test['O+'] + test['O2+'] + test['O4+'] + test['NO+'] + test['O2pN2'] + test['N2O+'] + test['NO2+'] + test['H+'] + test['H2+'] + test['H3+'] + test['OH+'] + test['H2O+'] + test['H3O+'] 
+#neg = test['O-'] + test['O2-'] + test['O3-'] + test['O4-'] + test['NO-'] + test['NO2-'] + test['N2O-'] + test['NO3-'] + test['H-'] + test['OH-'] 
+pos_sp = ['N+', 'N2+', 'N3+', 'N4+', 'O+', 'O2+', 'O4+', 'NO+', 'O2pN2', 'N2O+', 'NO2+', 'H+', 'H2+', 'H3+', 'OH+', 'H2O+', 'H3O+']
+neg_sp = ['O-', 'O2-', 'O3-', 'O4-', 'NO-', 'NO2-', 'N2O-', 'NO3-', 'H-', 'OH-', 'e']
+
+pos = np.zeros(shape=(len(test['time'])))
+neg = np.zeros(shape=(len(test['time'])))
+for i in range(len(pos_sp)):
+    pos += np.exp(test[pos_sp[i]])
+for i in range(len(neg_sp)):
+    neg += np.exp(test[pos_sp[i]])
 
 #s = np.zeros(shape=(len(test['time'])))
 #for i in range(len(species)-1):
@@ -93,7 +108,8 @@ stoptime = -1
 #stoptime = len(test['N+'])/2
 
 #ax.plot(test['time'], pos, label='positive')
-#ax.plot(test['time'], neg + test['e'], '--', label='negative')
+##ax.plot(test['time'], neg + test['e'], '--', label='negative')
+#ax.plot(test['time'], neg, '--', label='negative')
 #axis = plt.gca()
 ##axis.set_ylim([-1e-4, 1e-4])
 #plt.legend()
@@ -142,6 +158,7 @@ for i in range(len(plot_species)):
     #lines = ax.plot(test['time'], pos - (neg + test['e']), label='all')
     #lines = ax.plot(test['time'][1:stoptime], test[plot_species[i]][1:stoptime]/np.linalg.norm(test[plot_species[i]][1:stoptime]), label=plot_species[i])
 
+    #lines = ax.plot(test['time'][0:stoptime], np.exp(test[plot_species[i]][0:stoptime]), label=plot_species[i])
     lines = ax.plot(test['time'][0:stoptime], test[plot_species[i]][0:stoptime], label=plot_species[i])
     #lines = ax.plot(np.fft.fftfreq(test['time'].shape[-1]), np.fft.fft(test[plot_species[i]]), label=plot_species[i])
     #lines = ax.semilogy(test['time'][1:stoptime], np.exp(test[plot_species[i]][1:stoptime]), label=plot_species[i])

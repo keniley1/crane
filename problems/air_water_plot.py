@@ -4,9 +4,9 @@ import csv
 import pandas as pd
 
 # Output CSV file name
-file = 'air_water_chemistry_test.csv'
-#file = 'air_water_chemistry_out_02.csv'
-#file = 'awc_pulse_test_test.csv'
+#file = 'air_water_chemistry_test.csv'
+file = 'air_water_chemistry_vib_test.csv'
+#file = 'air_water_chemistry_temp.csv'
 
 species = ['N',    'N+',     'N2',    'N2+',     'N2A3',
            'N2B3', 'N2C3',   'N2D',   'N2P',     'N2a_1',
@@ -34,9 +34,14 @@ nn =      [1.,       1.,        2.,       2.,         2.,
            3.,       4.,        1.]
 
 plot_species = np.copy(species)
+#plot_species = ['N2', 'N2v1', 'N2v2', 'N2v3', 'N2v4', 'N2v5', 'N2v6', 'N2v7', 'N2v8']
 #plot_species = ['e']
 #plot_species = ['N+']
 #plot_species = ['H+', 'H2+',  'H3+', 'OH+', 'H2O+', 'H3O+', 'H-', 'OH-', 'H', 'H2', 'OH', 'HO2', 'H2O2', 'HNO', 'HNO2', 'HNO3', 'H2O'] 
+
+### NEUTRALS
+#plot_species = ['N', 'N2', 'N2A3', 'N2B3', 'N2C3', 'N2D', 'N2P', 'N2a_1', 'NO', 'O', 'O1D', 'O1S', 'O2', 'O24_ev', 'O2a1', 'O2b1', 'O3', 'N2O', 'NO2', 'NO3' ,'N2O5', 'H', 'H2', 'OH', 'HO2', 'H2O2', 'HNO', 'HNO2', 'HNO3', 'H2O']
+
 #plot_species = ['Te']
 #plot_species = ['reduced_field']
 #plot_species = ['voltage']
@@ -106,8 +111,9 @@ def find_times(t,recurrence_time):
 #plt.legend()
 #plt.show()
 #exit()
+
 for i in range(len(plot_species)):
-    lines = ax.semilogy(test['time'][0:stoptime], test[plot_species[i]][0:stoptime], label=plot_species[i])
+    lines = ax.semilogy(test['time'][0:stoptime], test[plot_species[i]][0:stoptime], '.', label=plot_species[i])
 
     lines[0].set_color(cm(i//NUM_STYLES*float(NUM_STYLES)/NUM_COLORS))
     lines[0].set_linestyle(LINE_STYLES[i%NUM_STYLES])
@@ -118,7 +124,7 @@ axis = plt.gca()
 #axis.set_ylim([-1e-4, 1e-4])
 #axis.set_ylim([1e0, 1e21])
 #axis.set_ylim([1e-30, 1e21])
-#axis.set_ylim([-1e14, 1e15])
+#axis.set_ylim([-1e15, 1e15])
 plt.show()
 plt.xlabel('Time [s]', fontsize=14)
 #plt.ylabel('kV', fontsize=14)

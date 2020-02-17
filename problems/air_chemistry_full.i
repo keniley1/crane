@@ -652,6 +652,11 @@
   #  family = SCALAR
   #  initial_condition = 1.834268645908762e19
   #[../]
+  [./Te]
+    order = FIRST
+    family = SCALAR
+    initial_condition = 32000
+  [../]
   [./test]
     order = FIRST
     family = SCALAR
@@ -664,10 +669,10 @@
     #initial_condition = 2.445692e19
   [../]
 
-  [./ION]
-    order = FIRST
-    family = SCALAR
-  [../]
+  #[./ION]
+  #  order = FIRST
+  #  family = SCALAR
+  #[../]
 
   [./reduced_field]
     # Units: Td
@@ -675,11 +680,11 @@
     family = SCALAR
     #initial_condition = 100
   [../]
-  [./voltage]
-    order = FIRST
-    family = SCALAR
-    # for testing purposes only
-  [../]
+  #[./voltage]
+  #  order = FIRST
+  #  family = SCALAR
+  #  # for testing purposes only
+  #[../]
 
   [./TionN]
     order = FIRST
@@ -749,11 +754,20 @@
   #  #function = '100 * exp(-t)'
   #  function = 'voltage_time'
   #[../]
+  [./Te_read]
+    type = DataReadScalar
+    variable = Te
+    sampler = reduced_field
+    scale_factor = 7733.52643
+    property_file = 'air_test/electron_energy.txt'
+    execute_on = 'INITIAL TIMESTEP_BEGIN'
+  [../]
 
   [./test_calc]
     type = FunctionScalarAux
     variable = test
-    function = test_func
+    #function = test_func
+    function = dts
     execute_on = 'initial timestep_begin'
   [../]
 
@@ -764,26 +778,26 @@
     execute_on = 'initial timestep_begin'
   [../]
 
-  [./voltage_calc]
-    type = FunctionScalarAux
-    variable = voltage
-    function = voltage_time
-    execute_on = 'initial timestep_begin'
-  [../]
+  #[./voltage_calc]
+  #  type = FunctionScalarAux
+  #  variable = voltage
+  #  function = voltage_time
+  #  execute_on = 'initial timestep_begin'
+  #[../]
 
   [./neutral_sum]
     type = VariableSum
     variable = NEUTRAL
-    args = 'N2 O2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 NO'
+    args = 'N2 O2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 NO N2O NO2 NO3 N2O5'
     execute_on = 'initial linear nonlinear'
   [../]
 
-  [./ion_sum]
-    type = VariableSum
-    variable = ION
-    args = 'N+ N2+ N3+ N4+ O+ O2+ O4+ O- O2- O3- O4- NO+ NO- O2pN2'
-    execute_on = 'initial timestep_end'
-  [../]
+  #[./ion_sum]
+  #  type = VariableSum
+  #  variable = ION
+  #  args = 'N+ N2+ N3+ N4+ O+ O2+ O4+ O- O2- O3- O4- NO+ NO- O2pN2'
+  #  execute_on = 'initial timestep_end'
+  #[../]
 []
 
 [Functions]
@@ -801,47 +815,31 @@
   [./reduced_field_time]
     # Voltage [kV] / gap distance [mm] * n_neutral * 1e-21 to convert to Td
     type = ParsedFunction
-    # Tr is the period of repitition 
-    #vars = 'A d w p o Tr'
-    ##vals = '13.204851149149514 1486789.8154186027 50149412.89498433 -1.2796011330163444 -0.54054816147437 5e-6'
-    #vals = '13.204851149149514 1486789.8154186027 50149412.89498433 -1.2796011330163444 -0.54054816147437 1e-4'
-    #value = 'abs(A * exp(-d*(t%Tr)) * sin(w*(t%Tr) + p*2.455))*1e6 / 2.445692e4' 
-    ##value = '100'
-
-    # This value adds a damping factor so that it doesn't change so dramatically at the recurrence time
     vars = 'A d w p o Tr xoff'
     vals = '13.204851149149514 1486789.8154186027 50149412.89498433 -1.2796011330163444 -0.54054816147437 1e-4 40e-10'
     #value = 'abs((A * exp(-d*(t%Tr-xoff)) * sin(w*(t%Tr-xoff) - 6.08777077)))*1e6 / 2.445692e4' 
-    value = 'abs((A * exp(-d*(t%Tr-xoff)) * sin(w*(t%Tr-xoff) - 6.08777077))*(0.5 + 0.5*tanh(1e9*((t%Tr)-5e-9))))*1e6 / 2.445692e4' 
+    #value = 'abs((A * exp(-d*(t%Tr-xoff)) * sin(w*(t%Tr-xoff) - 6.08777077))*(0.5 + 0.5*tanh(1e9*((t%Tr)-5e-9))))*1e6 / 2.445692e4' 
+    value = 'abs((A * exp(-d*(t%Tr-xoff)) * sin(w*(t%Tr-xoff) - 6.083))*(0.5 + 0.5*tanh(1e9*((t%Tr)-5e-9))))*1e6 / 2.445692e4' 
 
   [../]
-  #[./reduced_field_time]
+
+  #[./voltage_time]
   #  # Voltage [kV] / gap distance [mm] * n_neutral * 1e-21 to convert to Td
   #  type = ParsedFunction
-  #  # Tr is the period of repitition 
   #  vars = 'A d w p o Tr'
-  #  vals = '13.204851149149514 1486789.8154186027 50149412.89498433 -1.2796011330163444 -0.54054816147437 5e-6'
-  #  value = 'abs((A * exp(-d*(t%Tr)) * sin(w*(t%Tr) + p))*1e6 / 2.445692e4)' 
+  #  #vals = '13.204851149149514 1486789.8154186027 50149412.89498433 -1.2796011330163444 -0.54054816147437 5e-6'
+  #  vals = '13.204851149149514 1486789.8154186027 50149412.89498433 -1.2796011330163444 -0.54054816147437 1e-4'
+  #  value = 'A * exp(-d*(t%Tr)) * sin(w*(t%Tr) + p*2.455)' 
   #  #value = 'A * exp(-d*t) * sin(w*t + p) + o' # Voltage [kV] / gap distance [mm] * n_neutral * 1e-21 to convert to Td
   #[../]
-  [./voltage_time]
-    # Voltage [kV] / gap distance [mm] * n_neutral * 1e-21 to convert to Td
-    type = ParsedFunction
-    vars = 'A d w p o Tr'
-    #vals = '13.204851149149514 1486789.8154186027 50149412.89498433 -1.2796011330163444 -0.54054816147437 5e-6'
-    vals = '13.204851149149514 1486789.8154186027 50149412.89498433 -1.2796011330163444 -0.54054816147437 1e-4'
-    value = 'A * exp(-d*(t%Tr)) * sin(w*(t%Tr) + p*2.455)' 
-    #value = 'A * exp(-d*t) * sin(w*t + p) + o' # Voltage [kV] / gap distance [mm] * n_neutral * 1e-21 to convert to Td
-  [../]
   [./dts]
     type = ParsedFunction
     vars = 'Tr'
     #vals = '5e-6'
     vals = '1e-4'
-    #value = '1.699e-9*tanh(5e6*(t%Tr)) + 1e-12'
-    #value = '0.9999e-8*tanh(1e5*(t%Tr)) + 1e-14'
-    #value = '(0.9999e-8*tanh(1e5*(t%Tr)) + 1e-12) / (exp(6.2e32*(t%Tr)^8))'
-    value = '(0.9999e-8*tanh(1e5*(t%Tr)) + 1e-11)*(1.0 - 0.999*(0.5 + 0.5*tanh((t%Tr - 0.9998e-4)/1e-8)))'
+    #value = '(0.9999e-8*tanh(4e5*(t%Tr)) + 1e-11)*(1.0 - 0.999*(0.5 + 0.5*tanh((t%Tr - 0.9998e-4)/1e-8)))'
+    #value = '(0.9999e-7*tanh(2e4*(t%Tr)) + 1e-10)*(1.0 - 0.999*(0.5 + 0.5*tanh((t%Tr - 0.998e-4)/5e-9)))'
+    value = '(0.5999e-7*tanh(2e4*(t%Tr)) + 2e-11)*(1.0 - 0.999*(0.5 + 0.5*tanh((t%Tr - 0.998e-4)/5e-9)))'
   [../]
 []
 
@@ -862,7 +860,7 @@
   automatic_scaling = true
   compute_scaling_once = false
   #end_time = 1e4
-  end_time = 0.01
+  end_time = 0.004
   line_search = 'basic'
   petsc_options = '-snes_converged_reason -snes_linesearch_monitor'
   solve_type = NEWTON
@@ -923,24 +921,35 @@
   #[../]
 []
 
+#[Outputs]
+#  csv = true
+#  interval = 1
+#  show = 'N2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO NO+ NO- O2pN2 e N2O NO2 NO3 N2O5 N2O+ NO2+ N2O- NO2- NO3- reduced_field test'
+#  [./console]
+#    type = Console
+#    execute_scalars_on = 'none'
+#  [../]
+#[]
+
 [Outputs]
-  csv = true
-  #exodus = true
-  #interval = 1
-  #interval = 4
-  interval = 5
-  #interval = 10
-  #[./exodus]
-  #  type = Exodus
-  #  execute_scalars_on = 'INITIAL TIMESTEP_END'
-  #  #scalar_as_nodal = true
+  #[./species]
+  #  type = CSV
+  #  interval = 1
+  #  show = 'N2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO NO+ NO- O2pN2 e N2O NO2 NO3 N2O5 N2O+ NO2+ N2O- NO2- NO3- reduced_field test'
   #[../]
-  #show = 'N N+ N2 N2+ N2A3 N2B3 N2C3 N2D N2P N2a_1 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N3+ N4+ NO NO+ NO- O O+ O- O1D O1S O2 O2+ O2- O24_ev O2a1 O2b1 O2v1 O2v2 O2v3 O2v4 O3 O3- O4+ O4- O2pN2 NEUTRAL e reduced_field test'
-  show = 'N2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO NO+ NO- O2pN2 e N2O NO2 NO3 N2O5 N2O+ NO2+ N2O- NO2- NO3-'
+  #[./reactions]
+  #  type = CSV
+  #  interval = 1
+  #  hide = 'N2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO NO+ NO- O2pN2 e N2O NO2 NO3 N2O5 N2O+ NO2+ N2O- NO2- NO3- reduced_field test'
+  #[../]
+  [./test]
+    type = CSV
+    show = 'N2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P N+ N2+ N3+ N4+ O2 O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 O+ O2+ O4+ O- O2- O3- O4- NO NO+ NO- O2pN2 e N2O NO2 NO3 N2O5 N2O+ NO2+ N2O- NO2- NO3- reduced_field Te'
+  #execute_scalars_on = 'INITIAL TIMESTEP_END'
+  [../]
   [./console]
     type = Console
     execute_scalars_on = 'none'
-    # execute_on = 'initial'
   [../]
 []
 
@@ -958,10 +967,13 @@
     include_electrons = true
     file_location = 'air_test'
     electron_density = 'e'
-    equation_variables = 'TeffN TeffN2 TeffN3 TeffN4 TionN TionN2 TionN3 TionN4'
-    equation_constants = 'Te Tgas'
-    #equation_values = '4 300'
-    equation_values = '32480 300'
+    #equation_variables = 'TeffN TeffN2 TeffN3 TeffN4 TionN TionN2 TionN3 TionN4'
+    #equation_constants = 'Te Tgas'
+    ##equation_values = '4 300'
+    #equation_values = '32480 300'
+    equation_variables = 'TeffN TeffN2 TeffN3 TeffN4 TionN TionN2 TionN3 TionN4 Te'
+    equation_constants = 'Tgas'
+    equation_values = '300'
     rate_provider_var = 'reduced_field'
     #lumped_species = true
     #lumped = 'N2 O2 N2v1 N2v2 N2v3 N2v4 N2v5 N2v6 N2v7 N2v8 N2A3 N2B3 N2a_1 N2C3 N N2D N2P O2v1 O2v2 O2v3 O2v4 O2a1 O2b1 O24_ev O O1D O1S O3 NO'
