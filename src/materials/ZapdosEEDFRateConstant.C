@@ -70,9 +70,16 @@ ZapdosEEDFRateConstant::computeQpProperties()
 {
   Real actual_mean_energy = std::exp(_mean_en[_qp] - _em[_qp]);
 
+  try
+  {
   _reaction_rate[_qp] = _coefficient_interpolation.sample(actual_mean_energy);
 
   _d_k_d_en[_qp] = _coefficient_interpolation.sampleDerivative(actual_mean_energy);
+  }
+  catch (std::out_of_range &)
+  {
+    throw MooseException("We went out of range! Cut the timestep.");
+  }
 
   if (_reaction_rate[_qp] < 0.0)
     _reaction_rate[_qp] = 0.0;

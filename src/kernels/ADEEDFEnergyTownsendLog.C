@@ -35,8 +35,11 @@ ADEEDFEnergyTownsendLog::ADEEDFEnergyTownsendLog(const InputParameters & paramet
     _threshold_energy(getParam<Real>("threshold_energy")),
     _diffem(getADMaterialProperty<Real>("diffem")),
     _muem(getADMaterialProperty<Real>("muem")),
+    _alpha(getADMaterialProperty<Real>("alpha" + getParam<std::string>("number"))),
+    /*
     _alpha(getADMaterialProperty<Real>("alpha" + getParam<std::string>("number") + "_" +
                                        getParam<std::string>("reaction"))),
+                                       */
     _grad_potential(adCoupledGradient("potential")),
     _em(adCoupledValue("electrons")),
     _grad_em(adCoupledGradient("electrons")),

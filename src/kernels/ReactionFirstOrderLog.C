@@ -28,8 +28,9 @@ ReactionFirstOrderLog::ReactionFirstOrderLog(const InputParameters & parameters)
   : Kernel(parameters),
     _v(coupledValue("v")),
     _v_id(coupled("v")),
-    _reaction_coeff(getMaterialProperty<Real>("k" + getParam<std::string>("number") + "_" +
-                                              getParam<std::string>("reaction"))),
+    _reaction_coeff(getMaterialProperty<Real>("k" + getParam<std::string>("number"))),
+    //_reaction_coeff(getMaterialProperty<Real>("k" + getParam<std::string>("number") + "_" +
+    //                                          getParam<std::string>("reaction"))),
     _stoichiometric_coeff(getParam<Real>("coefficient")),
     _v_eq_u(getParam<bool>("_v_eq_u"))
 {

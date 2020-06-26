@@ -40,8 +40,11 @@ ADEEDFRateConstantTownsend::validParams()
 ADEEDFRateConstantTownsend::ADEEDFRateConstantTownsend(const InputParameters & parameters)
   : ADMaterial(parameters),
     _coefficient_format(getParam<std::string>("reaction_coefficient_format")),
+    /*
     _townsend_coefficient(declareADProperty<Real>("alpha" + getParam<std::string>("number") + "_" +
                                                   getParam<std::string>("reaction"))),
+                                                  */
+    _townsend_coefficient(declareADProperty<Real>("alpha" + getParam<std::string>("number"))),
     _massIncident(getMaterialProperty<Real>("mass" + (*getVar("electrons", 0)).name())),
     _em(adCoupledValue("electrons")),
     _mean_en(isCoupled("mean_energy") ? adCoupledValue("mean_energy") : _em)
@@ -68,23 +71,40 @@ ADEEDFRateConstantTownsend::ADEEDFRateConstantTownsend(const InputParameters & p
   else
     mooseError("Unable to open file");
 
-  _coefficient_interpolation = libmesh_make_unique<LinearInterpolation>(val_x, rate_coefficient);
+  //_coefficient_interpolation = libmesh_make_unique<LinearInterpolation>(val_x, rate_coefficient);
+  _coefficient_interpolation.setData(val_x, rate_coefficient);
 }
 
 void
 ADEEDFRateConstantTownsend::computeQpProperties()
 {
-
+  //  try
+  //  {
   _townsend_coefficient[_qp].value() =
-      _coefficient_interpolation->sample(std::exp(_mean_en[_qp].value() - _em[_qp].value()));
-  _townsend_coefficient[_qp].derivatives() = _coefficient_interpolation->sampleDerivative(std::exp(
+      _coefficient_interpolation.sample(std::exp(_mean_en[_qp].value() - _em[_qp].value()));
+  _townsend_coefficient[_qp].derivatives() = _coefficient_interpolation.sampleDerivative(std::exp(
                                                  _mean_en[_qp].value() - _em[_qp].value())) *
                                              std::exp(_mean_en[_qp].value() - _em[_qp].value()) *
                                              (_mean_en[_qp].derivatives() - _em[_qp].derivatives());
+
+  /*
+  _townsend_coefficient[_qp].value() =
+      _coefficient_interpolation->sample(std::exp(_mean_en[_qp].value() - _em[_qp].value()));
+  _townsend_coefficient[_qp].derivatives() =
+      _coefficient_interpolation->sampleDerivative(
+          std::exp(_mean_en[_qp].value() - _em[_qp].value())) *
+      std::exp(_mean_en[_qp].value() - _em[_qp].value()) *
+      (_mean_en[_qp].derivatives() - _em[_qp].derivatives());
+      */
 
   if (_townsend_coefficient[_qp].value() < 0)
   {
     _townsend_coefficient[_qp].value() = 0;
     _townsend_coefficient[_qp].derivatives() = 0;
   }
+  //  }
+  //  catch (std::out_of_range &)
+  //  {
+  //    throw MooseException("We went out of range! Cut the timestep!");
+  //  }
 }

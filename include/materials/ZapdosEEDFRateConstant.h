@@ -14,7 +14,7 @@
 #pragma once
 
 #include "Material.h"
-/* #include "LinearInterpolation.h" */
+#include "LinearInterpolation.h" 
 #include "SplineInterpolation.h"
 
 class ZapdosEEDFRateConstant;
@@ -31,6 +31,7 @@ protected:
   virtual void computeQpProperties();
 
   SplineInterpolation _coefficient_interpolation;
+  //LinearInterpolation _coefficient_interpolation;
 
   MaterialProperty<Real> & _reaction_rate;
   MaterialProperty<Real> & _d_k_d_en;

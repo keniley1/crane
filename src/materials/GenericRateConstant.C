@@ -26,10 +26,12 @@ validParams<GenericRateConstant>()
 
 GenericRateConstant::GenericRateConstant(const InputParameters & parameters)
   : Material(parameters),
-    _reaction_rate(declareProperty<Real>("k" + getParam<std::string>("number") + "_" +
-                                         getParam<std::string>("reaction"))),
-    _d_k_d_en(declareProperty<Real>("d_k" + getParam<std::string>("number") + "_d_en_" +
-                                    getParam<std::string>("reaction"))),
+    _reaction_rate(declareProperty<Real>("k" + getParam<std::string>("number"))),
+    _d_k_d_en(declareProperty<Real>("d_k" + getParam<std::string>("number") + "_d_en_")),
+    //_reaction_rate(declareProperty<Real>("k" + getParam<std::string>("number") + "_" +
+    //                                     getParam<std::string>("reaction"))),
+    //_d_k_d_en(declareProperty<Real>("d_k" + getParam<std::string>("number") + "_d_en_" +
+    //                                getParam<std::string>("reaction"))),
     _rate_value(getParam<Real>("reaction_rate_value"))
 {
 }

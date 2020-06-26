@@ -153,7 +153,8 @@ ChemicalReactionsBase::ChemicalReactionsBase(InputParameters params)
 {
   if (isParamValid("name"))
   {
-    _name += "_";
+    //_name += "_";
+    _name = getParam<std::string>("name");
   }
   else
     _name = "";
@@ -359,7 +360,8 @@ ChemicalReactionsBase::ChemicalReactionsBase(InputParameters params)
       catch (const std::invalid_argument &)
       {
         mooseError("Rate coefficient '" + rate_coefficient_string[i] +
-                   "' is invalid! "
+                   "' is invalid! \n"
+                   "Reaction: " + _reaction[i] + "\n"
                    "There are three rate coefficient types that are accepted:\n"
                    "  1. Constant (A + B -> C  : 10)\n"
                    "  2. Equation (A + B -> C  : {1e-4*exp(10)})\n"

@@ -33,8 +33,11 @@ ADEEDFElasticTownsendLog::ADEEDFElasticTownsendLog(
     _r_units(1. / getParam<Real>("position_units")),
     _diffem(getADMaterialProperty<Real>("diffem")),
     _muem(getADMaterialProperty<Real>("muem")),
+    _alpha(getADMaterialProperty<Real>("alpha" + getParam<std::string>("number"))),
+    /*
     _alpha(getADMaterialProperty<Real>("alpha" + getParam<std::string>("number") + "_" +
                                        getParam<std::string>("reaction"))),
+                                       */
     _massGas(getMaterialProperty<Real>("mass" + (*getVar("target", 0)).name())),
     _grad_potential(adCoupledGradient("potential")),
     _em(adCoupledValue("electrons")),

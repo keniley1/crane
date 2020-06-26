@@ -575,9 +575,15 @@ AddZapdosReactions::addConstantRateCoefficient(const unsigned & reaction_num)
 void
 AddZapdosReactions::addFunctionRateCoefficient(const unsigned & reaction_num)
 {
-  InputParameters params = _factory.getValidParams("DerivativeParsedMaterial");
-  params.set<std::string>("f_name") =
-      "k" + Moose::stringify(reaction_num) + "_" + _reaction[reaction_num];
+  std::string mat_name;
+  //if (_use_ad)
+  //  mat_name = "ADParsedMaterial";
+  //else
+    mat_name = "DerivativeParsedMaterial";
+
+  InputParameters params = _factory.getValidParams(mat_name);
+  params.set<std::string>("f_name") = "k" + Moose::stringify(reaction_num);
+      //"k" + Moose::stringify(reaction_num) + "_" + _reaction[reaction_num];
   params.set<std::vector<VariableName>>("args") =
       getParam<std::vector<VariableName>>("equation_variables");
   params.set<std::vector<std::string>>("constant_names") =
@@ -585,13 +591,36 @@ AddZapdosReactions::addFunctionRateCoefficient(const unsigned & reaction_num)
   params.set<std::vector<std::string>>("constant_expressions") =
       getParam<std::vector<std::string>>("equation_values");
   params.set<std::string>("function") = _rate_equation_string[reaction_num];
-  params.set<unsigned int>("derivative_order") = 1;
   params.set<std::vector<SubdomainName>>("block") = getParam<std::vector<SubdomainName>>("block");
-  _problem->addMaterial("DerivativeParsedMaterial",
+  if (!_use_ad)
+    params.set<unsigned int>("derivative_order") = 1;
+
+  _problem->addMaterial(mat_name,
                         "reaction_" + getParam<std::vector<SubdomainName>>("block")[0] + "_" +
                             std::to_string(reaction_num) + "_" + _name,
                         params);
 }
+
+/*
+void
+AddZapdosReactions::addADFunctionRateCoefficient(const unsigned & reaction_num)
+{
+  InputParameters params = _factory.getValidParams("ADParsedMaterial");
+  params.set<std::string>("f_name") = "k" + Moose::stringify(reaction_num) + "_" + _reaction[reaction_num];
+  params.set<std::vector<VariableName>>("args") =
+      getParam<std::vector<VariableName>>("equation_variables");
+  params.set<std::vector<std::string>>("constant_names") =
+      getParam<std::vector<std::string>>("equation_constants");
+  params.set<std::vector<std::string>>("constant_expressions") =
+      getParam<std::vector<std::string>>("equation_values");
+  params.set<std::string>("function") = _rate_equation_string[reaction_num];
+  params.set<std::vector<SubdomainName>>("block") = getParam<std::vector<SubdomainName>>("block");
+  _problem->addMaterial("ADParsedMaterial",
+                        "reaction_" + getParam<std::vector<SubdomainName>>("block")[0] + "_" +
+                            std::to_string(reaction_num) + "_" + _name,
+                        params);
+}
+*/
 
 void
 AddZapdosReactions::addSuperelasticRateCoefficient(const unsigned & reaction_num)

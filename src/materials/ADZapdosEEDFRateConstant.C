@@ -62,6 +62,8 @@ ADZapdosEEDFRateConstant::ADZapdosEEDFRateConstant(const InputParameters & param
 void
 ADZapdosEEDFRateConstant::computeQpProperties()
 {
+  try
+  {
   _rate_coefficient[_qp].value() =
       _coefficient_interpolation->sample(std::exp(_mean_en[_qp].value() - _em[_qp].value()));
   _rate_coefficient[_qp].derivatives() =
@@ -73,5 +75,10 @@ ADZapdosEEDFRateConstant::computeQpProperties()
   {
     _rate_coefficient[_qp].value() = 0.0;
     _rate_coefficient[_qp].derivatives() = 0.0;
+  }
+  }
+  catch (std::out_of_range &)
+  {
+    throw MooseException("We went out of range! Cut the timestep!");
   }
 }
