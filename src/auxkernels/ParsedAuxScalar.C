@@ -40,6 +40,7 @@ ParsedAuxScalar::ParsedAuxScalar(const InputParameters & parameters)
 {
   // build variables argument
   std::string variables;
+  unsigned int count = 0;
   for (unsigned int i = 0; i < _nargs; ++i)
   {
     variables += (i == 0 ? "" : ",") + getScalarVar("args", i)->name();
@@ -74,8 +75,8 @@ ParsedAuxScalar::ParsedAuxScalar(const InputParameters & parameters)
   if (_enable_jit)
     _func_F->JITCompile();
 
-  // reserve storage for parameter passing bufefr
-  _func_params.resize(_nargs);
+  // reserve storage for parameter passing buffer
+    _func_params.resize(_nargs);
 }
 
 Real
