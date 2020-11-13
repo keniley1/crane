@@ -290,7 +290,8 @@
 [Executioner]
   type = Transient
   end_time = 1e-1
-  solve_type = NEWTON
+  #solve_type = NEWTON
+  solve_type = LINEAR
   dtmin = 1e-20
 
   steady_state_detection = true
@@ -313,4 +314,8 @@
 [Outputs]
   csv = true
   interval = 10
+  [Console]
+    type = Console
+    execute_scalars_on = none 
+  []
 []

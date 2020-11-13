@@ -359,6 +359,104 @@ AddScalarReactions::act()
 
   if (_current_task == "add_scalar_kernel")
   {
+    /*
+     *
+     * EEDF REACTIONS
+     *
+     */
+    std::string kernel_name;
+    for (unsigned int i = 0; i < _num_eedf_reactions; ++i)
+    {
+      int electron_index;
+      int target_index;
+
+      for (unsigned int kk = 0; kk < _reactants[_eedf_reaction_number[i]].size(); ++kk)
+      {
+        if (_reactants[_eedf_reaction_number[i]][kk] == getParam<std::string>("electron_density"))
+          electron_index = kk;
+        else
+          target_index = kk;
+      }
+      for (unsigned int j = 0; j < _species.size(); ++j)
+      {
+        if (_species_count[_eedf_reaction_number[i]][j] != 0)
+        {
+          kernel_name = getElectronImpactKernelName(false, false, false);
+          addEEDFKernel(_eedf_reaction_number[i], j, kernel_name, electron_index, target_index);
+          //_ad_prepend + "ElectronImpactReaction" + _townsend_append + _log_append,
+        }
+      }
+
+      if (_energy_change[_eedf_reaction_number[i]])
+      {
+        kernel_name =
+            getElectronImpactKernelName(true, _elastic_collision[_eedf_reaction_number[i]], false);
+        // This will be used to switch between gas temperature and electron temperature
+        /*
+        if (_electron_energy_term[t])
+          energy_sign = 1.0;
+        else
+          energy_sign = -1.0;
+        */
+        addEEDFEnergy(_eedf_reaction_number[i], kernel_name);
+      }
+    }
+
+    /*
+     *
+     * FUNCTION REACTIONS
+     *
+     * (Note that functions will be added as normal kernels, not AD.
+     * No AD functionality exists for parsed materials.)
+     */
+    for (unsigned int i = 0; i < _num_function_reactions; ++i)
+    {
+      for (unsigned int j = 0; j < _species.size(); ++j)
+      {
+        kernel_name = getKernelName(_reactants[_function_reaction_number[i]].size(), false, false);
+        if (_species_count[_function_reaction_number[i]][j] != 0)
+        {
+          addFunctionKernel(_function_reaction_number[i], j, kernel_name, false);
+        }
+        else
+          continue;
+      }
+
+      if (_energy_change[_function_reaction_number[i]])
+      {
+        kernel_name = getKernelName(_reactants[_function_reaction_number[i]].size(), true, false);
+        addFunctionKernel(_function_reaction_number[i], 0, kernel_name, true);
+      }
+    }
+
+    /*
+     *
+     * CONSTANT REACTIONS
+     *
+     */
+    for (unsigned int i = 0; i < _num_constant_reactions; ++i)
+    {
+      for (unsigned int j = 0; j < _species.size(); ++j)
+      {
+        kernel_name = getKernelName(_reactants[_constant_reaction_number[i]].size(), false, false);
+        if (_species_count[_constant_reaction_number[i]][j] != 0)
+        {
+          addConstantKernel(_constant_reaction_number[i], j, kernel_name, false);
+        }
+        else
+          continue;
+      }
+
+      if (_energy_change[_constant_reaction_number[i]])
+      {
+        kernel_name = getKernelName(_reactants[_constant_reaction_number[i]].size(), true, false);
+        addConstantKernel(_constant_reaction_number[i], 0, kernel_name, true);
+      }
+    }
+  }
+}
+
+/*
     int index; // stores index of species in the reactant/product arrays
     std::vector<std::string>::iterator iter;
     std::vector<std::string>::iterator iter_aux;
@@ -406,42 +504,6 @@ AddScalarReactions::act()
             else
               energy_sign = -1.0;
 
-            /*
-            int non_electron_index;
-            // find_other = std::find(_species.begin(), _species.end(), _reactants[i][v_index]) !=
-            // _species.end(); Coupled variable must be generalized to allow for 3 reactants
-            InputParameters params = _factory.getValidParams(energy_kernel_name);
-            // params.set<NonlinearVariableName>("variable") = _electron_energy[0];
-            params.set<NonlinearVariableName>("variable") = _energy_variable[t];
-            // params.set<std::vector<VariableName>>("em") = {"em"};
-            params.set<std::vector<VariableName>>("em") = {
-                getParam<std::string>("electron_density")};
-            // Find the non-electron reactant
-            for (unsigned int k = 0; k < _reactants[i].size(); ++k)
-            {
-              if (_reactants[i][k] == getParam<std::string>("electron_density"))
-                continue;
-              else
-                non_electron_index = k;
-            }
-            // Check if value is tracked, and if so, add as coupled variable.
-            find_other =
-                std::find(_species.begin(), _species.end(), _reactants[i][non_electron_index]) !=
-                _species.end();
-            find_aux = std::find(_aux_species.begin(),
-                                 _aux_species.end(),
-                                 _reactants[i][non_electron_index]) != _aux_species.end();
-            if (find_other || find_aux)
-              params.set<std::vector<VariableName>>("v") = {_reactants[i][non_electron_index]};
-
-            // params.set<std::vector<VariableName>>("v") = {"Ar*"};
-            params.set<std::string>("reaction") = _reaction[i];
-            params.set<Real>("threshold_energy") = energy_sign * _threshold_energy[i];
-            params.set<Real>("position_units") = _r_units;
-            _problem->addKernel(energy_kernel_name,
-                                _name + "energy_kernel" + std::to_string(i) + "_" + _reaction[i],
-                                params);
-                                */
             InputParameters params = _factory.getValidParams(energy_kernel_name);
             params.set<NonlinearVariableName>("variable") = _energy_variable[t];
             params.set<std::vector<VariableName>>("rate_coefficient") = {_aux_scalar_var_name[i]};
@@ -485,25 +547,7 @@ AddScalarReactions::act()
               find_other = std::find(_aux_species.begin(),
                                      _aux_species.end(),
                                      _reactants[i][reactant_indices[k]]) != _aux_species.end();
-            /*
-            if (find_other)
-              continue;
-            else
-              reactant_indices.erase(reactant_indices.begin() + k);
-              */
-            /*
-            find_other =
-                std::find(_species.begin(), _species.end(), _reactants[i][reactant_indices[k]]) !=
-                _species.end();
-            if (find_other)
-              continue;
-            else
-              reactant_indices.erase(reactant_indices.begin() + k);
-            */
           }
-          // find_other =
-          //    std::find(_species.begin(), _species.end(), _reactants[i][v_index]) !=
-          //    _species.end();
           if (_species_count[i][j] < 0)
           {
             InputParameters params = _factory.getValidParams(reactant_kernel_name);
@@ -511,12 +555,9 @@ AddScalarReactions::act()
             params.set<Real>("coefficient") = _species_count[i][j];
             params.set<std::vector<VariableName>>("rate_coefficient") = {_aux_scalar_var_name[i]};
             params.set<bool>("rate_constant_equation") = true;
-            // if (find_other)
-            //{
             for (unsigned int k = 0; k < reactant_indices.size(); ++k)
               params.set<std::vector<VariableName>>(other_variables[k]) = {
                   _reactants[i][reactant_indices[k]]};
-            //}
             _problem->addScalarKernel(reactant_kernel_name,
                                       _name + "kernel" + std::to_string(i) + "_" +
                                           std::to_string(j) + "_" + _reaction[i],
@@ -547,14 +588,11 @@ AddScalarReactions::act()
             params.set<Real>("coefficient") = _species_count[i][j];
             for (unsigned int k = 0; k < _reactants[i].size(); ++k)
             {
-              // if (include_species[k])
-              //{
               params.set<std::vector<VariableName>>(other_variables[k]) = {_reactants[i][k]};
               if (_species[j] == _reactants[i][k])
               {
                 params.set<bool>(other_variables[k] + "_eq_u") = true;
               }
-              //}
             }
             _problem->addScalarKernel(product_kernel_name,
                                       _name + "_kernel_prod" + std::to_string(i) + "_" +
@@ -565,4 +603,5 @@ AddScalarReactions::act()
       }
     }
   }
-}
+
+*/

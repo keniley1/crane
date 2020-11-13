@@ -47,6 +47,7 @@ validParams<AddZapdosReactions>()
       "aux_species", "Auxiliary species that are not included in nonlinear solve.");
   params.addParam<std::vector<SubdomainName>>("block",
                                               "The subdomain that this action applies to.");
+  params.addParam<std::vector<TagName>>("extra_vector_tags", "The tag names.");
   params.addParam<bool>(
       "use_ad",
       false,
@@ -428,6 +429,9 @@ AddZapdosReactions::addEEDFKernel(const unsigned & reaction_num,
   params.set<std::vector<SubdomainName>>("block") = getParam<std::vector<SubdomainName>>("block");
   params.set<Real>("coefficient") = (Real)_species_count[reaction_num][species_num];
   params.set<std::string>("number") = Moose::stringify(reaction_num);
+  if (isParamValid("extra_vector_tags"))
+    params.set<std::vector<TagName>>("extra_vector_tags") =
+        getParam<std::vector<TagName>>("extra_vector_tags");
 
   // For townsend coefficients, potential variable is needed to compute electron flux
   if (_coefficient_format == "townsend")
@@ -489,6 +493,9 @@ AddZapdosReactions::addEEDFEnergy(const unsigned & reaction_num, const std::stri
 
   params.set<std::vector<SubdomainName>>("block") = getParam<std::vector<SubdomainName>>("block");
   params.set<std::string>("number") = Moose::stringify(reaction_num);
+  if (isParamValid("extra_vector_tags"))
+    params.set<std::vector<TagName>>("extra_vector_tags") =
+        getParam<std::vector<TagName>>("extra_vector_tags");
 
   if (_coefficient_format == "townsend")
   {
@@ -692,6 +699,9 @@ AddZapdosReactions::addFunctionKernel(const unsigned & reaction_num,
     kernel_identifier = "kernel_function_" + getParam<std::vector<SubdomainName>>("block")[0] +
                         std::to_string(reaction_num) + "_" + std::to_string(species_num);
   }
+  if (isParamValid("extra_vector_tags"))
+    params.set<std::vector<TagName>>("extra_vector_tags") =
+        getParam<std::vector<TagName>>("extra_vector_tags");
 
   _problem->addKernel(kernel_name, kernel_identifier + "_" + _name, params);
 }
@@ -739,5 +749,8 @@ AddZapdosReactions::addConstantKernel(const unsigned & reaction_num,
   }
 
   params.set<std::vector<SubdomainName>>("block") = getParam<std::vector<SubdomainName>>("block");
+  if (isParamValid("extra_vector_tags"))
+    params.set<std::vector<TagName>>("extra_vector_tags") =
+        getParam<std::vector<TagName>>("extra_vector_tags");
   _problem->addKernel(kernel_name, kernel_identifier + "_" + _name, params);
 }

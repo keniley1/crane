@@ -74,6 +74,7 @@
   type = Transient
   start_time = 0
   end_time = 3
+  num_steps = 1
   dt = 0.1
 
   solve_type = linear
