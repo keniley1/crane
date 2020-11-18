@@ -288,7 +288,7 @@ AddScalarReactionsOld::act()
         params.set<AuxVariableName>("variable") = {_aux_scalar_var_name[i]};
         params.set<ExecFlagEnum>("execute_on") = "INITIAL";
         _problem->addAuxScalarKernel(
-            "AuxInitialConditionScalar", "aux_initialization_rxn" + std::to_string(i), params);
+            "AuxInitialConditionScalar", _name + "aux_initialization_rxn" + std::to_string(i), params);
       }
       else if (_superelastic_reaction[i])
       {

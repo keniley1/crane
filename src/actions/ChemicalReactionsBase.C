@@ -153,7 +153,7 @@ ChemicalReactionsBase::ChemicalReactionsBase(InputParameters params)
 {
   if (isParamValid("name"))
   {
-    _name += "_";
+    _name = getParam<std::string>("name") + "_";
   }
   else
     _name = "";
