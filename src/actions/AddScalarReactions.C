@@ -442,7 +442,18 @@ AddScalarReactions::act()
      */
     for (unsigned int i = 0; i < _num_constant_reactions; ++i)
     {
-      kernel_name = "ConstantRateEquation";
+      // This section will add each source and sink term for reactions with
+      // CONSTANT rate coefficients.
+      kernel_name = "ODEReactionConstant";
+
+      for (unsigned int j = 0; j < _species.size(); ++j)
+      {
+        if (_species_count[_constant_reaction_number[i]][j] != 0)
+        {
+          addConstantKernel(_constant_reaction_number[i], j, kernel_name, false);
+        }
+      }
+
       /*
       for (unsigned int j = 0; j < _species.size(); ++j)
       {
@@ -814,48 +825,24 @@ AddScalarReactions::addConstantKernel(const unsigned & reaction_num,
                                       const std::string & kernel_name,
                                       const bool & energy_kernel)
 {
-  std::string kernel_identifier;
-
   InputParameters params = _factory.getValidParams(kernel_name);
-  params.set<std::string>("reaction") = _reaction[reaction_num];
-  params.set<std::string>("number") = Moose::stringify(reaction_num);
-  params.set<std::vector<SubdomainName>>("block") = getParam<std::vector<SubdomainName>>("block");
 
-  // TO DO: (1) ALLOW FOR BOTH ELECTRON AND GAS TEMPERATURE
+  params.set<std::vector<VariableName>>("reactants") = {_reactants[reaction_num]};
+  params.set<Real>("rate_coefficient") = _rate_coefficient[reaction_num];
 
   if (energy_kernel)
   {
-    params.set<NonlinearVariableName>("variable") = {_electron_energy[0]};
-    /*
-    for (unsigned int k = 0; k < _reactants[reaction_num].size(); ++k)
-      params.set<std::vector<VariableName>>(_reactant_names[k]) = {_reactants[reaction_num][k]};
-      */
-    params.set<std::vector<VariableName>>("reactants") = {_reactants[reaction_num][0]};
-    params.set<Real>("coefficient") = 1;
-    params.set<Real>("threshold_energy") = _threshold_energy[reaction_num];
-    kernel_identifier = "kernel_constant_energy_" +
-                        getParam<std::vector<SubdomainName>>("block")[0] +
-                        std::to_string(reaction_num) + "_" + std::to_string(species_num);
+    mooseError("Energy term not available yet!");
   }
   else
   {
-    params.set<NonlinearVariableName>("variable") = _species[species_num];
-    /*
-    for (unsigned int k = 0; k < _reactants[reaction_num].size(); ++k)
-    {
-      params.set<std::vector<VariableName>>(_reactant_names[k]) = {_reactants[reaction_num][k]};
-      if (_species[species_num] == _reactants[reaction_num][k])
-      {
-        params.set<bool>("_" + _reactant_names[k] + "_eq_u") = true;
-      }
-    }
-    */
-    params.set<std::vector<VariableName>>("reactants") = {_reactants[reaction_num][0]};
     params.set<Real>("coefficient") = _species_count[reaction_num][species_num];
-    kernel_identifier = "kernel_constant_" + getParam<std::vector<SubdomainName>>("block")[0] +
-                        std::to_string(reaction_num) + "_" + std::to_string(species_num);
+    params.set<NonlinearVariableName>("variable") = _species[species_num];
   }
 
-  params.set<std::vector<SubdomainName>>("block") = getParam<std::vector<SubdomainName>>("block");
+  _problem->addScalarKernel(reactant_kernel_name,
+                            _name + "kernel" + std::to_string(i) + "_" +
+                                std::to_string(j) + "_" + _reaction[i],
+                            params);
   _problem->addKernel(kernel_name, kernel_identifier + "_" + _name, params);
 }
