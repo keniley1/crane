@@ -4,6 +4,10 @@
   nx = 1
 []
 
+[Debug]
+  show_var_residual_norms = true
+[]
+
 [Variables]
   [./N]
     family = SCALAR
@@ -238,9 +242,17 @@
 
 [Executioner]
   type = Transient
-  automatic_scaling = true
+  #automatic_scaling = true
+  #compute_scaling_once = false
+  petsc_options_iname = '-pc_type -ksp_type'
+  petsc_options_value = 'sor cg'
+  petsc_options = '-snes_view'
+  line_search = 'none'
+  nl_abs_tol = 1e3
+  l_max_its = 20
   end_time = 2.5e-3
-  solve_type = linear
+  solve_type = newton
+  #solve_type = linear
   dt = 1e-6
 []
 

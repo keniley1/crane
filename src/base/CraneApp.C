@@ -41,7 +41,8 @@ CraneApp::registerAll(Factory & f, ActionFactory & af, Syntax & s)
 //  s.registerActionSyntax("AddZapdosReactions", "ChemicalReactions/ZapdosNetwork");
 //  s.registerActionSyntax("ChemicalReactionsBase", "ChemicalReactions/ZapdosNetwork");
 
-  s.registerActionSyntax("AddScalarReactions", "GlobalReactions/*");
+  s.registerActionSyntax("AddScalarReactionsOld", "GlobalReactions/*");
+  s.registerActionSyntax("AddScalarReactions", "TestReactions/*");
   s.registerActionSyntax("AddZapdosReactions", "Reactions/*");
 
   s.registerActionSyntax("AddZapdosReactions", "ChemicalReactions/ZapdosNetwork/*");

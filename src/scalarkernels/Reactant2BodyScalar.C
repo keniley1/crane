@@ -30,6 +30,8 @@ Reactant2BodyScalar::Reactant2BodyScalar(const InputParameters & parameters)
 Real
 Reactant2BodyScalar::computeQpResidual()
 {
+  if ((_var.name() == "nAr*" && (*getScalarVar("v", 0)).name() == "nAr*"))
+    std::cout << -_stoichiometric_coeff * _rate_coefficient[_i] * _u[_i] * _v[_i] << std::endl;
   return -_stoichiometric_coeff * _rate_coefficient[_i] * _u[_i] * _v[_i];
 }
 

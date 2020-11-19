@@ -62,7 +62,8 @@
   type = Transient
   end_time = 50
   dt = 0.01
-  solve_type = NEWTON
+  #solve_type = NEWTON
+  solve_type = linear
   scheme = crank-nicolson
 []
 
@@ -75,4 +76,8 @@
 
 [Outputs]
   csv = true
+  [Console]
+    type = Console
+    execute_scalars_on = none
+  []
 []
