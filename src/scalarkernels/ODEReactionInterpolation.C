@@ -51,8 +51,6 @@ ODEReactionInterpolation::interpolateData()
   std::vector<Real> y_val;
   std::string file_name =
       getParam<std::string>("file_location") + "/" + getParam<std::string>("property_file");
-  std::cout << getParam<std::string>("file_location") << "\n"
-            << getParam<std::string>("property_file") << std::endl;
   MooseUtils::checkFileReadable(file_name);
   const char * charPath = file_name.c_str();
   std::ifstream myfile(charPath);

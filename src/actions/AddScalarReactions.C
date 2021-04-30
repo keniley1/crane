@@ -415,24 +415,17 @@ AddScalarReactions::act()
      */
     for (unsigned int i = 0; i < _num_function_reactions; ++i)
     {
-      /*
+      kernel_name = "ODEReactionFunction";
+
+      getReactantVector(_reactants[_function_reaction_number[i]]);
+
       for (unsigned int j = 0; j < _species.size(); ++j)
       {
-        kernel_name = getKernelName(_reactants[_function_reaction_number[i]].size(), false, false);
         if (_species_count[_function_reaction_number[i]][j] != 0)
         {
           addFunctionKernel(_function_reaction_number[i], j, kernel_name, false);
         }
-        else
-          continue;
       }
-
-      if (_energy_change[_function_reaction_number[i]])
-      {
-        kernel_name = getKernelName(_reactants[_function_reaction_number[i]].size(), true, false);
-        addFunctionKernel(_function_reaction_number[i], 0, kernel_name, true);
-      }
-      */
     }
 
     /*
@@ -445,6 +438,11 @@ AddScalarReactions::act()
       // This section will add each source and sink term for reactions with
       // CONSTANT rate coefficients.
       kernel_name = "ODEReactionConstant";
+
+      // This function resets and populates the _reactant_names vector.
+      // This should eventually be migrated to the ChemicalReactionsBase function, but for now this
+      // will suffice.
+      getReactantVector(_reactants[_constant_reaction_number[i]]);
 
       for (unsigned int j = 0; j < _species.size(); ++j)
       {
@@ -771,52 +769,25 @@ AddScalarReactions::addFunctionKernel(const unsigned & reaction_num,
   std::string kernel_identifier;
 
   InputParameters params = _factory.getValidParams(kernel_name);
-  params.set<std::string>("reaction") = _reaction[reaction_num];
-  params.set<std::string>("number") = Moose::stringify(reaction_num);
-  params.set<std::vector<SubdomainName>>("block") = getParam<std::vector<SubdomainName>>("block");
-
-  // define the coupled variables in the function to compute jacobian contribution
-  // params.set<std::vector<VariableName>>("args") =
-  //    getParam<std::vector<VariableName>>("equation_variables");
-
-  // TO DO: (1) INCLUDE VARIABLES FOR JACOBIAN CONTRIBUTION OF RATE COEFFICIENT
-  //        (2) ALLOW FOR BOTH ELECTRON AND GAS TEMPERATURE
+  params.set<std::string>("function") = _rate_equation_string[reaction_num];
+  params.set<std::vector<VariableName>>("reactants") = _reactant_names;
+  params.set<std::vector<VariableName>>("args") =
+      getParam<std::vector<VariableName>>("equation_variables");
 
   if (energy_kernel)
   {
-    params.set<NonlinearVariableName>("variable") = {_electron_energy[0]};
-    // for (unsigned int k = 0; k < _reactants[reaction_num].size(); ++k)
-    //  params.set<std::vector<VariableName>>(_reactant_names[k]) = {_reactants[reaction_num][k]};
-    params.set<std::vector<VariableName>>("reactants") = {_reactants[reaction_num][0]};
-    params.set<Real>("coefficient") = 1;
-    params.set<Real>("threshold_energy") = _threshold_energy[reaction_num];
-    kernel_identifier = "kernel_function_energy_" +
-                        getParam<std::vector<SubdomainName>>("block")[0] +
-                        std::to_string(reaction_num) + "_" + std::to_string(species_num);
+    mooseError("Energy term not available yet!");
   }
   else
   {
     params.set<NonlinearVariableName>("variable") = _species[species_num];
-    /*
-    for (unsigned int k = 0; k < _reactants[reaction_num].size(); ++k)
-    {
-      params.set<std::vector<VariableName>>(_reactant_names[k]) = {_reactants[reaction_num][k]};
-      if (_species[species_num] == _reactants[reaction_num][k])
-      {
-        params.set<bool>("_" + _reactant_names[k] + "_eq_u") = true;
-      }
-    }
-    */
-    params.set<std::vector<VariableName>>("reactants") = {_reactants[reaction_num][0]};
     params.set<Real>("coefficient") = _species_count[reaction_num][species_num];
-    kernel_identifier = "kernel_function_" + getParam<std::vector<SubdomainName>>("block")[0] +
-                        std::to_string(reaction_num) + "_" + std::to_string(species_num);
   }
-  if (isParamValid("extra_vector_tags"))
-    params.set<std::vector<TagName>>("extra_vector_tags") =
-        getParam<std::vector<TagName>>("extra_vector_tags");
 
-  _problem->addKernel(kernel_name, kernel_identifier + "_" + _name, params);
+  _problem->addScalarKernel(kernel_name,
+                            _name + "kernel" + std::to_string(reaction_num) + "_" +
+                                std::to_string(species_num) + "_" + _reaction[reaction_num],
+                            params);
 }
 
 void
@@ -827,7 +798,7 @@ AddScalarReactions::addConstantKernel(const unsigned & reaction_num,
 {
   InputParameters params = _factory.getValidParams(kernel_name);
 
-  params.set<std::vector<VariableName>>("reactants") = {_reactants[reaction_num]};
+  params.set<std::vector<VariableName>>("reactants") = _reactant_names;
   params.set<Real>("rate_coefficient") = _rate_coefficient[reaction_num];
 
   if (energy_kernel)
@@ -840,9 +811,18 @@ AddScalarReactions::addConstantKernel(const unsigned & reaction_num,
     params.set<NonlinearVariableName>("variable") = _species[species_num];
   }
 
-  _problem->addScalarKernel(reactant_kernel_name,
-                            _name + "kernel" + std::to_string(i) + "_" +
-                                std::to_string(j) + "_" + _reaction[i],
+  _problem->addScalarKernel(kernel_name,
+                            _name + "kernel" + std::to_string(reaction_num) + "_" +
+                                std::to_string(species_num) + "_" + _reaction[reaction_num],
                             params);
-  _problem->addKernel(kernel_name, kernel_identifier + "_" + _name, params);
+}
+
+void
+AddScalarReactions::getReactantVector(const std::vector<std::string> & reactants)
+{
+  _reactant_names.resize(reactants.size());
+  for (unsigned int i = 0; i < reactants.size(); i++)
+  {
+    _reactant_names[i] = reactants[i];
+  }
 }

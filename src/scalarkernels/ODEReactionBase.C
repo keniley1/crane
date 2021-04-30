@@ -30,7 +30,6 @@ ODEReactionBase::ODEReactionBase(const InputParameters & parameters)
   {
     _reactants[i] = &coupledScalarValue("reactants", i);
     _reactant_num[i] = coupledScalar("reactants", i);
-    //std::cout << (*getScalarVar("reactants", i)).name() << std::endl;
   }
 }
 

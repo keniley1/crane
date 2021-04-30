@@ -78,7 +78,6 @@ ODEReactionFunction::ODEReactionFunction(const InputParameters & parameters)
                       getParam<std::vector<std::string>>("constant_expressions"));
 
   // parse function
-  std::cout << _func_F->Parse(_function, variables) << std::endl;
   if (_func_F->Parse(_function, variables) >= 0)
     mooseError("Invalid function\n",
                _function,

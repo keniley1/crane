@@ -24,6 +24,9 @@ public:
                                  const unsigned & species_num,
                                  const std::string & kernel_name,
                                  const bool & energy_kernel);
+
+  virtual void getReactantVector(const std::vector<std::string> & reactants);
+
   virtual std::string
   getKernelName(const unsigned & num_reactants, const bool & energy_kernel, const bool & is_aux);
 
@@ -34,6 +37,8 @@ public:
 
   // protected:
   std::vector<std::string> _aux_scalar_var_name;
+
+  std::vector<VariableName> _reactant_names;
 
   std::string _log_append;
 };
