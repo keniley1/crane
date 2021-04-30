@@ -23,7 +23,8 @@ public:
   ReactionLogBase(const InputParameters & parameters);
 
 protected:
-  virtual ADReal computeQpResidual();
+  virtual ADReal computeQpResidual() = 0;
+  virtual ADReal multiplyReactants();
 
   std::vector<Real> _coefficients;
   const bool _townsend;

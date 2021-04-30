@@ -4,12 +4,14 @@
 #include "MooseUtils.h"
 #include "MooseVariable.h"
 
-registerADMooseObject("CraneApp", ReactionLogBase);
+//registerADMooseObject("CraneApp", ReactionLogBase);
 
 InputParameters
 ReactionLogBase::validParams()
 {
   InputParameters params = ADKernel::validParams();
+  params.addParam<std::string>(
+      "electron_name", "em", "The name of the electrons. Zapdos automatically defaults to `em`.");
   params.addParam<bool>("townsend",
                         false,
                         "Whether or not this is reaction based on a Townsend coefficient. If true, "
@@ -53,10 +55,10 @@ ReactionLogBase::ReactionLogBase(const InputParameters & parameters)
   {
     // If this is a townsend reaction, check to make sure electrons are
     // not included in the reactant list. Those are multiplied in later.
-    // If it is included, it is ignored and that element is erased  from
+    // If included, it is ignored and that element is erased from
     // the reactant vector.
     // Foolproof! (Hopefully...)
-    if (_townsend && getVar("reactants", i)->name() == "em")
+    if (_townsend && getVar("reactants", i)->name() == getParam<std::string>("electron_name"))
     {
       dval = i;
       continue;
@@ -69,6 +71,9 @@ ReactionLogBase::ReactionLogBase(const InputParameters & parameters)
   // is labeled as a Townsend reaction.
   if (dval >= 0)
   {
+    if (_coefficients.size() == _reactants.size())
+      _coefficients.erase(_coefficients.begin() + dval);
+
     _reactants.erase(_reactants.begin() + dval);
     _num_reactants += -1;
   }
@@ -78,7 +83,7 @@ ReactionLogBase::ReactionLogBase(const InputParameters & parameters)
 }
 
 ADReal
-ReactionLogBase::computeQpResidual()
+ReactionLogBase::multiplyReactants()
 {
   _val = 0;
   for (unsigned int i = 0; i < _num_reactants; ++i)
@@ -86,5 +91,6 @@ ReactionLogBase::computeQpResidual()
     _val += (*_reactants[i])[_qp] * _coefficients[i];
   }
 
-  return -_test[_i][_qp] * std::exp(_val);
+  return std::exp(_val);
 }
+// ReactionLogBase::computeQpResidual()

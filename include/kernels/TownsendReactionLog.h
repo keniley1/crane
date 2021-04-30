@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include "ADKernel.h"
+#include "ReactionLogBase.h"
 
-class TownsendReactionLog : public ADKernel
+class TownsendReactionLog : public ReactionLogBase
 {
 public:
   static InputParameters validParams();
@@ -29,12 +29,11 @@ protected:
 
   const ADMaterialProperty<Real> & _diffem;
   const ADMaterialProperty<Real> & _muem;
-  const ADMaterialProperty<Real> & _alpha;
+  const ADMaterialProperty<Real> & _townsend_coefficient;
 
   // const ADVariableValue & _mean_en;
   const ADVariableGradient & _grad_potential;
   const ADVariableValue & _em;
-  const ADVariableValue & _target;
-  Real _coefficient;
+  Real _stoichiometric_value;
   const ADVariableGradient & _grad_em;
 };

@@ -9,15 +9,18 @@ registerADMooseObject("CraneApp", TownsendReactionLog);
 InputParameters
 TownsendReactionLog::validParams()
 {
-  InputParameters params = ADKernel::validParams();
+  InputParameters params = ReactionLogBase::validParams();
+
+  params.addParam<std::string>(
+      "rate_coefficient_name",
+      "The name of the material property containing this townsend coefficient. By default the "
+      "Crane will add its own name, but if added manually a user-defined name may be provided.");
   params.addRequiredCoupledVar("potential", "The potential.");
   params.addRequiredCoupledVar("electrons", "The electron density.");
-  params.addRequiredCoupledVar("target",
-                               "The (heavy species) target of the electron-impact reaction.");
-  params.addRequiredParam<Real>(
-      "coefficient",
-      "The number of species consumed or produced in this reaction.\ne.g. e + Ar -> e + e + Arp:\n "
-      "coefficient of e is 1, coefficient of Ar is -1, and coefficient of Arp is 1.");
+  params.addRequiredParam<Real>("nu",
+                                "The total stoichiometric coefficient for the variable this "
+                                "reaction is acting on. This is positive or negative, depending on "
+                                "whether the variable is produced or consumed by this reaction.");
   params.addRequiredParam<Real>("position_units", "Units of position.");
   params.addRequiredParam<std::string>("reaction", "Stores the full reaction equation.");
   params.addParam<std::string>(
@@ -31,28 +34,35 @@ TownsendReactionLog::validParams()
 }
 
 TownsendReactionLog::TownsendReactionLog(const InputParameters & parameters)
-  : ADKernel(parameters),
+  : ReactionLogBase(parameters),
     _r_units(1. / getParam<Real>("position_units")),
     _diffem(getADMaterialProperty<Real>("diffem")),
     _muem(getADMaterialProperty<Real>("muem")),
-    _alpha(getADMaterialProperty<Real>("alpha" + getParam<std::string>("number") + "_" +
-                                       getParam<std::string>("reaction"))),
-    //_mean_en(adCoupledValue("mean_en")),
+    _townsend_coefficient(getADMaterialProperty<Real>(
+        isParamValid("rate_coefficient_name")
+            ? getParam<std::string>("rate_coefficient_name")
+            : "alpha" + getParam<std::string>("number") + "_" + getParam<std::string>("reaction"))),
     _grad_potential(adCoupledGradient("potential")),
     _em(adCoupledValue("electrons")),
-    _target(adCoupledValue("target")),
-    _coefficient(getParam<Real>("coefficient")),
+    _stoichiometric_value(getParam<Real>("nu")),
     _grad_em(adCoupledGradient("electrons"))
-//_target(isCoupled("target") ? adCoupledValue("target") : _em),
 {
 }
 
 ADReal
 TownsendReactionLog::computeQpResidual()
 {
+  return -_test[_i][_qp] * ReactionLogBase::multiplyReactants() *
+         (std::exp(_em[_qp]) * (-_muem[_qp] * -_grad_potential[_qp] * _r_units -
+                                _diffem[_qp] * _grad_em[_qp] * _r_units))
+             .norm() *
+         _townsend_coefficient[_qp] * _stoichiometric_value;
+
+  /*
   return -_test[_i][_qp] * _alpha[_qp] * std::exp(_target[_qp]) *
          (std::exp(_em[_qp]) * (-_muem[_qp] * -_grad_potential[_qp] * _r_units -
                                 _diffem[_qp] * _grad_em[_qp] * _r_units))
              .norm() *
          _coefficient;
+         */
 }
