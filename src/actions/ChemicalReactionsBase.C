@@ -504,13 +504,26 @@ ChemicalReactionsBase::ChemicalReactionsBase(InputParameters params)
 
     _num_reactants.push_back(_reactants[i].size());
     _num_products.push_back(_products[i].size());
+
+    // Create 2D vectors to store the counts of the reactants  
+    // and total stoichiometric coefficient for each species.
+    // For example, in the reaction
+    // 
+    //    e + Ar -> e + e + Ar+
+    //
+    // electrons and Ar each have a reactant number of 1, since they appear
+    // once in the reactant side. But the total stoichiometric coefficients
+    // are +1 and -1, respectively, since 1 electron is gained and 1 Ar is lost
+    // in the reaction.
     _species_count.resize(_num_reactions, std::vector<Real>(_species.size()));
+    _reactant_count.resize(_num_reactions, std::vector<Real>(_species.size()));
     for (unsigned int j = 0; j < _species.size(); ++j)
     {
       for (unsigned int k = 0; k < _reactants[i].size(); ++k)
       {
         if (_reactants[i][k] == _species[j])
         {
+          _reactant_count[i][j] += 1;
           _species_count[i][j] -= 1;
         }
         if (getParam<bool>("include_electrons") == true)
@@ -529,6 +542,24 @@ ChemicalReactionsBase::ChemicalReactionsBase(InputParameters params)
         }
       }
     }
+  }
+
+  for (unsigned int i = 0; i < _reaction.size(); ++i)
+  {
+    std::cout << _reaction[i] << std::endl; 
+    /*
+    for (unsigned int j = 0; j < _species.size(); ++j)
+    {
+      std::cout << "    " << _species[j] << ", " << _reactant_count[i][j] << std::endl;
+    }
+    */
+    for (unsigned int j = 0; j < _reactants[i].size(); ++j)
+      std::cout << "    " << _reactants[i][j] << std::endl;
+
+    std::sort(_reactants[i].begin(), _reactants[i].end());
+    _reactants[i].erase(std::unique(_reactants[i].begin(), _reactants[i].end()), _reactants[i].end());
+    for (unsigned int j = 0; j < _reactants[i].size(); ++j)
+      std::cout << "     ---" << _reactants[i][j] << std::endl;
   }
 
   // Now we check for lumped species. For each reaction `i` involving a lumped species, this code

@@ -31,6 +31,7 @@ protected:
   std::vector<bool> _energy_change;
   // std::vector<VariableName> _potential;
   std::vector<std::vector<Real>> _species_count;
+  std::vector<std::vector<Real>> _reactant_count;
   std::vector<unsigned int> _electron_index;
   std::vector<bool> _reversible_reaction;
   std::vector<bool> _superelastic_reaction;
